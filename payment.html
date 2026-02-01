@@ -253,7 +253,11 @@
                     <p>Pay using Google Pay, PhonePe, Paytm, etc.</p>
                 </div>
                 <div class="upi-details">
-                    <input type="text" class="upi-input" id="upiId" placeholder="Enter your UPI ID (e.g., name@okhdfcbank)">
+                    <a href="upi://pay?pa=9047424116@ybl&pn=Karate%20Academy&am=${purchaseDetails.price}" class="btn btn-primary btn-full" style="margin-top: 15px; text-align: center; display: block;">
+                        <i class="fas fa-mobile-alt"></i> Pay Now via UPI
+                    </a>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">After payment, click the button below:</p>
+                    <input type="text" class="upi-input" id="upiId" placeholder="Enter UPI Reference No. (optional)">
                 </div>
             </div>
 
@@ -361,7 +365,7 @@
             
             document.getElementById('summaryPlan').textContent = planNames[purchaseDetails.plan] || 'Beginner Plan';
             document.getElementById('summaryLocation').textContent = purchaseDetails.location || 'Not selected';
-            document.getElementById('summaryTotal').textContent = `$${finalPrice.toFixed(0)}`;
+            document.getElementById('summaryTotal').textContent = `₹${finalPrice.toFixed(0)}`;
         }
 
         function selectPayment(element, method) {
@@ -384,15 +388,11 @@
             let paymentDetails = {};
 
             if (selectedPaymentMethod === 'upi') {
-                const upiId = document.getElementById('upiId').value;
-                if (!upiId || !upiId.includes('@')) {
-                    document.getElementById('paymentError').textContent = 'Please enter a valid UPI ID';
-                    document.getElementById('paymentError').style.display = 'block';
-                    return;
-                }
+                // UPI payment - show receiver UPI ID, user pays to that ID
                 paymentDetails = {
                     method: 'UPI',
-                    upiId: upiId
+                    upiId: '9047424116@ybl',
+                    receiverUpi: '9047424116@ybl'
                 };
             } else if (selectedPaymentMethod === 'banking') {
                 const bankName = document.getElementById('bankName').value;
