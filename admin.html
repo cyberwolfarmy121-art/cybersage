@@ -287,7 +287,7 @@
             <!-- Pricing Section -->
             <div id="adminPricing" class="admin-section" style="display: none;">
                 <div class="admin-header">
-                    <h2>Membership Pricing</h2>
+                    <h2>Membership Plans</h2>
                 </div>
                 
                 <div class="pricing-container">
@@ -297,16 +297,26 @@
                             <div class="pricing-card">
                                 <h3><i class="fas fa-star"></i> Beginner Plan</h3>
                                 <div class="form-group">
-                                    <label for="beginnerPrice">Price ($/month)</label>
+                                    <label for="beginnerPrice">Price (₹/month)</label>
                                     <input type="number" id="beginnerPrice" min="0" value="49">
                                 </div>
                                 <div class="form-group">
                                     <label for="beginnerDiscount">Discount (%)</label>
                                     <input type="number" id="beginnerDiscount" min="0" max="100" value="0">
                                 </div>
+                                <div class="form-group">
+                                    <label>Features</label>
+                                    <div class="features-list" id="beginnerFeaturesList">
+                                        <!-- Features will be loaded dynamically -->
+                                    </div>
+                                    <div class="add-feature-row">
+                                        <input type="text" id="beginnerNewFeature" placeholder="Add new feature">
+                                        <button type="button" class="btn btn-small" onclick="addFeature('beginner')"><i class="fas fa-plus"></i> Add</button>
+                                    </div>
+                                </div>
                                 <div class="price-preview">
-                                    <span class="original-price">$<span id="beginnerOriginal">49</span></span>
-                                    <span class="final-price">$<span id="beginnerFinal">49</span>/month</span>
+                                    <span class="original-price">₹<span id="beginnerOriginal">49</span></span>
+                                    <span class="final-price">₹<span id="beginnerFinal">49</span>/month</span>
                                 </div>
                             </div>
                             
@@ -314,16 +324,26 @@
                             <div class="pricing-card featured">
                                 <h3><i class="fas fa-crown"></i> Advanced Plan</h3>
                                 <div class="form-group">
-                                    <label for="advancedPrice">Price ($/month)</label>
+                                    <label for="advancedPrice">Price (₹/month)</label>
                                     <input type="number" id="advancedPrice" min="0" value="89">
                                 </div>
                                 <div class="form-group">
                                     <label for="advancedDiscount">Discount (%)</label>
                                     <input type="number" id="advancedDiscount" min="0" max="100" value="0">
                                 </div>
+                                <div class="form-group">
+                                    <label>Features</label>
+                                    <div class="features-list" id="advancedFeaturesList">
+                                        <!-- Features will be loaded dynamically -->
+                                    </div>
+                                    <div class="add-feature-row">
+                                        <input type="text" id="advancedNewFeature" placeholder="Add new feature">
+                                        <button type="button" class="btn btn-small" onclick="addFeature('advanced')"><i class="fas fa-plus"></i> Add</button>
+                                    </div>
+                                </div>
                                 <div class="price-preview">
-                                    <span class="original-price">$<span id="advancedOriginal">89</span></span>
-                                    <span class="final-price">$<span id="advancedFinal">89</span>/month</span>
+                                    <span class="original-price">₹<span id="advancedOriginal">89</span></span>
+                                    <span class="final-price">₹<span id="advancedFinal">89</span>/month</span>
                                 </div>
                             </div>
                             
@@ -331,16 +351,26 @@
                             <div class="pricing-card">
                                 <h3><i class="fas fa-dragon"></i> Elite Plan</h3>
                                 <div class="form-group">
-                                    <label for="elitePrice">Price ($/month)</label>
+                                    <label for="elitePrice">Price (₹/month)</label>
                                     <input type="number" id="elitePrice" min="0" value="149">
                                 </div>
                                 <div class="form-group">
                                     <label for="eliteDiscount">Discount (%)</label>
                                     <input type="number" id="eliteDiscount" min="0" max="100" value="0">
                                 </div>
+                                <div class="form-group">
+                                    <label>Features</label>
+                                    <div class="features-list" id="eliteFeaturesList">
+                                        <!-- Features will be loaded dynamically -->
+                                    </div>
+                                    <div class="add-feature-row">
+                                        <input type="text" id="eliteNewFeature" placeholder="Add new feature">
+                                        <button type="button" class="btn btn-small" onclick="addFeature('elite')"><i class="fas fa-plus"></i> Add</button>
+                                    </div>
+                                </div>
                                 <div class="price-preview">
-                                    <span class="original-price">$<span id="eliteOriginal">149</span></span>
-                                    <span class="final-price">$<span id="eliteFinal">149</span>/month</span>
+                                    <span class="original-price">₹<span id="eliteOriginal">149</span></span>
+                                    <span class="final-price">₹<span id="eliteFinal">149</span>/month</span>
                                 </div>
                             </div>
                         </div>

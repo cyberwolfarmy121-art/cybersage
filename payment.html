@@ -102,21 +102,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 24px;
+            color: white;
         }
 
-        .payment-icon.upi {
-            background: #e3f2fd;
-            color: #1976d2;
+        .payment-icon.upi { background: linear-gradient(135deg, #673ab7, #9c27b0); }
+        .payment-icon.banking { background: linear-gradient(135deg, #2196f3, #03a9f4); }
+        .payment-icon.check { background: linear-gradient(135deg, #ff9800, #ffc107); }
+
+        .payment-details {
+            flex: 1;
         }
 
-        .payment-icon.banking {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-
-        .payment-details h4 {
+        .payment-details h3 {
             margin: 0 0 5px 0;
+            font-size: 1.1rem;
         }
 
         .payment-details p {
@@ -125,40 +125,29 @@
             font-size: 0.9rem;
         }
 
-        .btn-pay {
-            width: 100%;
-            padding: 18px;
-            font-size: 1.2rem;
-            margin-top: auto;
-        }
-
-        .back-link {
-            display: inline-flex;
+        .payment-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--primary-color);
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-weight: 500;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        .payment-option.selected .payment-checkbox {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
         }
 
-        .error-message {
-            color: #e74c3c;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
+        .payment-option.selected .payment-checkbox::after {
+            content: '✓';
+            font-size: 14px;
         }
 
-        .payment-icon.check {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .upi-details, .banking-details, .check-details {
+        .upi-apps, .banking-details, .check-details {
             display: none;
             margin-top: 15px;
             padding: 15px;
@@ -166,19 +155,94 @@
             border-radius: 8px;
         }
 
-        .payment-option.selected .upi-details,
+        .payment-option.selected .upi-apps,
         .payment-option.selected .banking-details,
         .payment-option.selected .check-details {
             display: block;
         }
 
-        .upi-input {
+        .upi-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upi-checkbox:hover {
+            background: var(--light-bg);
+        }
+
+        .upi-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .upi-checkbox .upi-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+        }
+
+        .upi-checkbox .upi-icon.gpay { background: #4285f4; }
+        .upi-checkbox .upi-icon.paytm { background: #00baf2; }
+        .upi-checkbox .upi-icon.phonepe { background: #674597; }
+        .upi-checkbox .upi-icon.other { background: #757575; }
+
+        .other-upi-input {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             margin-top: 10px;
             font-size: 1rem;
+        }
+
+        .screenshot-details {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .payment-option.selected .screenshot-details {
+            display: block;
+        }
+
+        .screenshot-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .screenshot-upload-area:hover {
+            border-color: var(--primary-color);
+            background: var(--light-bg);
+        }
+
+        .screenshot-upload-area.has-image {
+            padding: 10px;
+        }
+
+        .screenshot-upload-area img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
         }
 
         .banking-form {
@@ -200,60 +264,99 @@
             border-radius: 8px;
         }
 
-        .check-details p {
-            color: #666;
-            font-size: 0.9rem;
-            margin: 10px 0;
+        .error-message {
+            color: #e74c3c;
+            padding: 10px;
+            background: #fdeaea;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
         }
 
-        .check-info {
-            background: #e3f2fd;
-            padding: 12px;
-            border-radius: 8px;
+        .btn-pay {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
             margin-top: 10px;
-            font-size: 0.9rem;
         }
 
-        .upi-apps {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+        /* User Login Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
         }
 
-        .upi-app-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-            color: white;
+            color: #999;
+        }
+
+        .close:hover {
+            color: var(--primary-color);
+        }
+
+        .modal-content h2 {
+            margin: 0 0 20px 0;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: 500;
         }
 
-        .upi-app-btn.phonepe {
-            background: #673AB7;
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
         }
 
-        .upi-app-btn.gpay {
-            background: #00897B;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .upi-app-btn:hover {
-            opacity: 0.9;
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
-            <img id="navLogoImage" src="" alt="Logo" style="display: none;">
-            <i class="fas fa-fist-raised"></i>
+            <i class="fas fa-karateka"></i>
             <span>Karate Academy</span>
         </div>
         <div class="hamburger" id="hamburger">
@@ -261,23 +364,16 @@
         </div>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#videos">Videos</a></li>
-            <li><a href="index.html#membership">Membership</a></li>
+            <li><a href="index.html#plans">Plans</a></li>
             <li><a href="index.html#gallery">Gallery</a></li>
             <li><a href="index.html#contact">Contact</a></li>
-            <li id="userLoginLink"><a href="#" onclick="showUserLogin(); return false;">Login</a></li>
-            <li id="userProfileLink" style="display: none;"><a href="#" onclick="showUserProfile(); return false;"><i class="fas fa-user"></i> <span id="userNameDisplay"></span></a></li>
         </ul>
     </nav>
 
     <div class="payment-container">
-        <a href="purchase.html" class="back-link">
-            <i class="fas fa-arrow-left"></i> Back to Location
-        </a>
-
         <div class="payment-header">
-            <h1><i class="fas fa-credit-card"></i> Payment</h1>
-            <p>Complete your purchase securely</p>
+            <h1><i class="fas fa-credit-card"></i> Complete Payment</h1>
+            <p>Secure payment powered by multiple options</p>
         </div>
 
         <div class="order-summary" id="orderSummary">
@@ -291,8 +387,12 @@
                 <span id="summaryLocation">Loading...</span>
             </div>
             <div class="summary-row">
-                <span>Duration</span>
-                <span>Monthly</span>
+                <span>Original Price</span>
+                <span id="summaryOriginal">₹0</span>
+            </div>
+            <div class="summary-row" id="discountRow" style="display: none;">
+                <span>Discount</span>
+                <span id="summaryDiscount" style="color: #27ae60;">-₹0</span>
             </div>
             <div class="summary-row total">
                 <span>Total</span>
@@ -301,57 +401,62 @@
         </div>
 
         <div class="payment-methods">
-            <h2><i class="fas fa-wallet"></i> Select Payment Method</h2>
-            
-            <div class="payment-option" onclick="selectPayment(this, 'upi')">
-                <input type="radio" name="payment" value="upi">
+            <h2><i class="fas fa-wallet"></i> Payment Method</h2>
+
+            <!-- UPI Payment Option -->
+            <label class="payment-option" onclick="selectPayment('upi')">
+                <input type="radio" name="paymentMethod" value="upi">
+                <div class="payment-checkbox"></div>
                 <div class="payment-icon upi">
                     <i class="fas fa-mobile-alt"></i>
                 </div>
                 <div class="payment-details">
-                    <h4>UPI</h4>
-                    <p>Pay using Google Pay, PhonePe, Paytm, etc.</p>
+                    <h3>UPI Payment</h3>
+                    <p>Pay using Google Pay, PhonePe, Paytm or any UPI app</p>
                 </div>
-                <div class="upi-details">
-                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">Pay to UPI ID: <strong>9047424116@ybl</strong></p>
-                    <div class="upi-apps">
-                        <a href="phonepe://pay?pa=9047424116@ybl&pn=Karate%20Academy&am=${purchaseDetails.price}" class="upi-app-btn phonepe" onclick="return confirmPayment('phonepe')">
-                            <i class="fab fa-phone"></i> PhonePe
-                        </a>
-                        <a href="gpay://pay?pa=9047424116@ybl&pn=Karate%20Academy&am=${purchaseDetails.price}" class="upi-app-btn gpay" onclick="return confirmPayment('gpay')">
-                            <i class="fab fa-google"></i> Google Pay
-                        </a>
-                    </div>
-                    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">After payment, click the button below:</p>
-                    <input type="text" class="upi-input" id="upiId" placeholder="Enter UPI Reference No. (optional)">
+                <div class="upi-apps">
+                    <label class="upi-checkbox" onclick="event.stopPropagation()">
+                        <input type="checkbox" name="upiApp" value="gpay" checked>
+                        <div class="upi-icon gpay">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <span>Google Pay</span>
+                    </label>
+                    <label class="upi-checkbox" onclick="event.stopPropagation()">
+                        <input type="checkbox" name="upiApp" value="phonepe">
+                        <div class="upi-icon phonepe">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <span>PhonePe</span>
+                    </label>
+                    <label class="upi-checkbox" onclick="event.stopPropagation()">
+                        <input type="checkbox" name="upiApp" value="paytm">
+                        <div class="upi-icon paytm">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <span>Paytm</span>
+                    </label>
+                    <label class="upi-checkbox" onclick="event.stopPropagation()">
+                        <input type="checkbox" name="upiApp" value="other">
+                        <div class="upi-icon other">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </div>
+                        <span>Other UPI Apps</span>
+                    </label>
+                    <input type="text" class="other-upi-input" placeholder="Enter your UPI ID (e.g., mobile@upi)" id="otherUpiId" style="display: none;">
                 </div>
-            </div>
+            </label>
 
-            <div class="payment-option" onclick="selectPayment(this, 'check')">
-                <input type="radio" name="payment" value="check">
-                <div class="payment-icon check">
-                    <i class="fas fa-money-check"></i>
-                </div>
-                <div class="payment-details">
-                    <h4>Pay by Check</h4>
-                    <p>Pay with check at the academy</p>
-                </div>
-                <div class="check-details">
-                    <p>You can pay by check at our academy location. Please bring the check on your first visit.</p>
-                    <div class="check-info">
-                        <i class="fas fa-info-circle"></i> Make check payable to: <strong>Karate Academy</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="payment-option" onclick="selectPayment(this, 'banking')">
-                <input type="radio" name="payment" value="banking">
+            <!-- Net Banking Option -->
+            <label class="payment-option" onclick="selectPayment('banking')">
+                <input type="radio" name="paymentMethod" value="banking">
+                <div class="payment-checkbox"></div>
                 <div class="payment-icon banking">
                     <i class="fas fa-university"></i>
                 </div>
                 <div class="payment-details">
-                    <h4>Net Banking</h4>
-                    <p>Pay directly from your bank account</p>
+                    <h3>Net Banking</h3>
+                    <p>Transfer directly from your bank account</p>
                 </div>
                 <div class="banking-details">
                     <div class="banking-form">
@@ -360,7 +465,40 @@
                         <input type="text" id="ifscCode" placeholder="IFSC Code">
                     </div>
                 </div>
-            </div>
+            </label>
+
+            <!-- Check Payment Option -->
+            <label class="payment-option" onclick="selectPayment('check')">
+                <input type="radio" name="paymentMethod" value="check">
+                <div class="payment-checkbox"></div>
+                <div class="payment-icon check">
+                    <i class="fas fa-money-check"></i>
+                </div>
+                <div class="payment-details">
+                    <h3>Pay by Check</h3>
+                    <p>Pay at the academy reception</p>
+                </div>
+                <div class="check-details">
+                    <p><strong>Payee:</strong> Karate Academy</p>
+                    <p>Bring your check to any of our academy locations.</p>
+                </div>
+            </label>
+
+            <!-- Screenshot Payment Option -->
+            <label class="payment-option" onclick="selectPayment('screenshot')">
+                <input type="radio" name="paymentMethod" value="screenshot">
+                <div class="payment-checkbox"></div>
+                <div class="payment-icon upi" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <div class="payment-details">
+                    <h3>Upload Screenshot</h3>
+                    <p>Upload payment screenshot from gallery</p>
+                </div>
+                <div class="screenshot-details">
+                    <p>After clicking Pay Now, upload your payment screenshot</p>
+                </div>
+            </label>
         </div>
 
         <div class="error-message" id="paymentError">Please select a payment method and fill in the required details</div>
@@ -386,48 +524,65 @@
         </div>
     </div>
 
-    <!-- User Profile Modal -->
-    <div class="modal" id="userProfileModal">
+    <!-- Screenshot Upload Modal -->
+    <div class="modal" id="screenshotModal">
         <div class="modal-content">
-            <span class="close" onclick="closeUserProfile()">&times;</span>
-            <h2><i class="fas fa-user-circle"></i> My Profile</h2>
-            <div id="userProfileContent"></div>
-            <button class="btn btn-secondary" onclick="logoutUser()" style="margin-top: 15px;">
-                <i class="fas fa-sign-out-alt"></i> Logout
+            <span class="close" onclick="closeScreenshotModal()">&times;</span>
+            <h2><i class="fas fa-camera"></i> Upload Payment Screenshot</h2>
+            <p style="margin-bottom: 15px; color: #666;">Please upload your payment screenshot to complete the order</p>
+            <div class="screenshot-upload-area" onclick="document.getElementById('screenshotInput').click()">
+                <input type="file" id="screenshotInput" accept="image/*" style="display: none;" onchange="previewScreenshot(this)">
+                <div id="screenshotPreview">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--primary-color);"></i>
+                    <p>Click to choose image from gallery</p>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="submitScreenshotPayment()" style="margin-top: 15px; width: 100%;">
+                <i class="fas fa-check"></i> Done
             </button>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        let selectedPaymentMethod = '';
+        let selectedPaymentMethod = null;
         let purchaseDetails = {};
 
+        // Load purchase details on page load
         document.addEventListener('DOMContentLoaded', function() {
             const stored = localStorage.getItem('pendingPurchase');
             if (stored) {
                 purchaseDetails = JSON.parse(stored);
-                loadOrderSummary();
+                
+                // Display order summary
+                document.getElementById('summaryPlan').textContent = capitalizeFirst(purchaseDetails.plan);
+                document.getElementById('summaryLocation').textContent = purchaseDetails.location || 'Online';
+                
+                // Get pricing
+                const pricing = getPricing();
+                const planData = pricing[purchaseDetails.plan] || { price: 49, discount: 0 };
+                
+                document.getElementById('summaryOriginal').textContent = '₹' + planData.price;
+                
+                if (planData.discount > 0) {
+                    document.getElementById('discountRow').style.display = 'flex';
+                    document.getElementById('summaryDiscount').textContent = '-₹' + (planData.price * planData.discount / 100);
+                }
+                
+                const finalPrice = planData.price - (planData.price * planData.discount / 100);
+                document.getElementById('summaryTotal').textContent = '₹' + finalPrice;
+                purchaseDetails.price = finalPrice;
             } else {
-                window.location.href = 'purchase.html';
+                document.getElementById('summaryPlan').textContent = 'No purchase found';
+                document.getElementById('summaryLocation').textContent = '-';
+                document.getElementById('summaryOriginal').textContent = '₹0';
+                document.getElementById('summaryTotal').textContent = '₹0';
             }
-            checkUserLogin();
             
             // Apply saved settings for logo
             const storedSettings = localStorage.getItem('karateSettings');
             if (storedSettings) {
                 const settings = JSON.parse(storedSettings);
-                const navLogoImage = document.getElementById('navLogoImage');
-                const navBrandIcon = document.querySelector('.nav-brand i');
-                
-                if (navLogoImage && settings.logoImage) {
-                    navLogoImage.src = settings.logoImage;
-                    navLogoImage.style.display = 'block';
-                    if (navBrandIcon) {
-                        navBrandIcon.style.display = 'none';
-                    }
-                }
-                
                 const navBrandText = document.querySelector('.nav-brand span');
                 if (navBrandText && settings.siteName) {
                     navBrandText.textContent = settings.siteName;
@@ -435,47 +590,38 @@
             }
         });
 
-        function loadOrderSummary() {
-            const pricing = getPricing();
-            const planNames = {
-                'beginner': 'Beginner Plan',
-                'advanced': 'Advanced Plan',
-                'elite': 'Elite Plan'
-            };
-            
-            const planData = pricing[purchaseDetails.plan] || { price: 49, discount: 0 };
-            const finalPrice = planData.price - (planData.price * planData.discount / 100);
-            
-            document.getElementById('summaryPlan').textContent = planNames[purchaseDetails.plan] || 'Beginner Plan';
-            document.getElementById('summaryLocation').textContent = purchaseDetails.location || 'Not selected';
-            document.getElementById('summaryTotal').textContent = `₹${finalPrice.toFixed(0)}`;
-            
-            // Update UPI links with actual price
-            updateUPILinks(finalPrice.toFixed(0));
-        }
-
-        function updateUPILinks(price) {
-            const upiLinks = document.querySelectorAll('.upi-app-btn');
-            upiLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                const newHref = href.replace(/am=\d+/, `am=${price}`);
-                link.setAttribute('href', newHref);
+        // Handle UPI app checkbox changes
+        document.querySelectorAll('input[name="upiApp"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const otherUpiInput = document.getElementById('otherUpiId');
+                if (this.value === 'other' && this.checked) {
+                    otherUpiInput.style.display = 'block';
+                } else if (this.value === 'other' && !this.checked) {
+                    otherUpiInput.style.display = 'none';
+                }
             });
-        }
+        });
 
-        function confirmPayment(app) {
-            const appName = app === 'phonepe' ? 'PhonePe' : 'Google Pay';
-            return confirm(`This will open ${appName} to complete your payment of ₹${document.getElementById('summaryTotal').textContent.replace('₹', '')}. Continue?`);
-        }
-
-        function selectPayment(element, method) {
-            document.querySelectorAll('.payment-option').forEach(opt => {
-                opt.classList.remove('selected');
-                opt.querySelector('input').checked = false;
-            });
-            element.classList.add('selected');
-            element.querySelector('input').checked = true;
+        // Handle payment method selection
+        function selectPayment(method) {
             selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            const selectedOption = document.querySelector(`.payment-option input[value="${method}"]`).closest('.payment-option');
+            selectedOption.classList.add('selected');
+            
+            // Uncheck all radio buttons first
+            document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Check the selected radio
+            document.querySelector(`input[name="paymentMethod"][value="${method}"]`).checked = true;
+            
             document.getElementById('paymentError').style.display = 'none';
         }
 
@@ -485,17 +631,101 @@
                 return;
             }
 
+            const pricing = getPricing();
+            const planData = pricing[purchaseDetails.plan] || { price: 49, discount: 0 };
+            const finalPrice = planData.price - (planData.price * planData.discount / 100);
+            
             let paymentDetails = {};
 
             if (selectedPaymentMethod === 'upi') {
-                // UPI payment - show receiver UPI ID, user pays to that ID
-                const upiRef = document.getElementById('upiId').value;
-                paymentDetails = {
+                // Get selected UPI apps
+                const selectedApps = [];
+                document.querySelectorAll('input[name="upiApp"]:checked').forEach(checkbox => {
+                    selectedApps.push(checkbox.value);
+                });
+                
+                if (selectedApps.length === 0) {
+                    document.getElementById('paymentError').textContent = 'Please select at least one UPI app';
+                    document.getElementById('paymentError').style.display = 'block';
+                    return;
+                }
+                
+                // If "other" UPI is selected, get the UPI ID
+                let upiId = '9047424116@ybl';
+                if (selectedApps.includes('other')) {
+                    const otherUpiId = document.getElementById('otherUpiId').value;
+                    if (!otherUpiId) {
+                        document.getElementById('paymentError').textContent = 'Please enter your UPI ID';
+                        document.getElementById('paymentError').style.display = 'block';
+                        return;
+                    }
+                    upiId = otherUpiId;
+                }
+                
+                // Create payment details for multiple apps
+                const appsInfo = selectedApps.map(app => {
+                    const appNames = {
+                        'gpay': 'Google Pay',
+                        'phonepe': 'PhonePe',
+                        'paytm': 'Paytm',
+                        'other': 'UPI'
+                    };
+                    return appNames[app] || app;
+                }).join(', ');
+                
+                // For primary UPI link (use first selected app)
+                const primaryApp = selectedApps[0];
+                let upiLink = '';
+                switch (primaryApp) {
+                    case 'phonepe':
+                        upiLink = `phonepe://pay?pa=${upiId}&pn=Karate%20Academy&am=${finalPrice.toFixed(0)}&cu=INR`;
+                        break;
+                    case 'gpay':
+                        upiLink = `gpay://pay?pa=${upiId}&pn=Karate%20Academy&am=${finalPrice.toFixed(0)}&cu=INR`;
+                        break;
+                    case 'paytm':
+                        upiLink = `paytm://pay?pa=${upiId}&pn=Karate%20Academy&am=${finalPrice.toFixed(0)}&cu=INR`;
+                        break;
+                    default:
+                        upiLink = `upi://pay?pa=${upiId}&pn=Karate%20Academy&am=${finalPrice.toFixed(0)}&cu=INR`;
+                }
+                
+                // Store payment details for confirmation page
+                const paymentDetails = {
                     method: 'UPI',
-                    upiId: '9047424116@ybl',
-                    receiverUpi: '9047424116@ybl',
-                    upiReference: upiRef || 'Not provided'
+                    apps: selectedApps,
+                    appNames: appsInfo,
+                    upiId: upiId,
+                    amount: finalPrice,
+                    redirectUrl: upiLink
                 };
+                
+                // Save to localStorage
+                localStorage.setItem('pendingPurchase', JSON.stringify({
+                    ...purchaseDetails,
+                    payment: paymentDetails,
+                    price: finalPrice
+                }));
+                
+                // For "other" UPI, show instructions instead of redirecting
+                if (selectedApps.includes('other') && selectedApps.length === 1) {
+                    alert(`Please open your UPI app and transfer ₹${finalPrice} to ${upiId}`);
+                    window.location.href = 'confirmation.html';
+                    return;
+                }
+                
+                // Confirm before redirecting
+                if (confirm(`This will open ${appsInfo} to complete your payment of ₹${finalPrice}. Continue?`)) {
+                    // Redirect to selected UPI app
+                    window.location.href = upiLink;
+                    
+                    // After redirect, show confirmation and WhatsApp option
+                    setTimeout(() => {
+                        window.location.href = 'confirmation.html';
+                    }, 2000);
+                }
+                
+                return;
             } else if (selectedPaymentMethod === 'check') {
                 // Check payment - record as check payment
                 paymentDetails = {
@@ -519,6 +749,13 @@
                     accountNumber: accountNumber,
                     ifscCode: ifscCode
                 };
+            } else if (selectedPaymentMethod === 'screenshot') {
+                // Open screenshot upload modal
+                document.getElementById('screenshotModal').style.display = 'flex';
+                // Reset screenshot preview
+                document.getElementById('screenshotPreview').innerHTML = '<i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--primary-color);"></i><p>Click to choose image from gallery</p>';
+                document.querySelector('.screenshot-upload-area').classList.remove('has-image');
+                return;
             }
 
             // Store payment details
@@ -528,6 +765,54 @@
             localStorage.setItem('pendingPurchase', JSON.stringify(purchaseDetails));
             
             // Redirect to confirmation page
+            window.location.href = 'confirmation.html';
+        }
+
+        // Screenshot Modal Functions
+        function closeScreenshotModal() {
+            document.getElementById('screenshotModal').style.display = 'none';
+        }
+
+        function previewScreenshot(input) {
+            const preview = document.getElementById('screenshotPreview');
+            const uploadArea = document.querySelector('.screenshot-upload-area');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Payment Screenshot">';
+                    uploadArea.classList.add('has-image');
+                    // Store the image data for later use
+                    window.screenshotData = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function submitScreenshotPayment() {
+            if (!window.screenshotData) {
+                alert('Please upload a payment screenshot first');
+                return;
+            }
+            
+            const pricing = getPricing();
+            const planData = pricing[purchaseDetails.plan] || { price: 49, discount: 0 };
+            const finalPrice = planData.price - (planData.price * planData.discount / 100);
+            
+            // Store payment details with screenshot
+            purchaseDetails.payment = {
+                method: 'Screenshot Upload',
+                amount: finalPrice,
+                screenshot: window.screenshotData,
+                status: 'Pending - Awaiting verification'
+            };
+            purchaseDetails.paymentStatus = 'completed';
+            purchaseDetails.paymentDate = new Date().toISOString();
+            
+            localStorage.setItem('pendingPurchase', JSON.stringify(purchaseDetails));
+            
+            // Close modal and redirect to confirmation
+            closeScreenshotModal();
             window.location.href = 'confirmation.html';
         }
     </script>

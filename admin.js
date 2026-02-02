@@ -86,6 +86,121 @@ function getMembers() {
     return stored ? JSON.parse(stored) : [];
 }
 
+// Initialize or get features from localStorage
+function getFeatures() {
+    const stored = localStorage.getItem('karateFeatures');
+    if (stored) {
+        return JSON.parse(stored);
+    }
+    // Default features structure
+    const defaultFeatures = {
+        beginner: [
+            { id: 1, text: 'Basic training videos', enabled: true },
+            { id: 2, text: 'Beginner kata tutorials', enabled: true },
+            { id: 3, text: 'Community access', enabled: true }
+        ],
+        advanced: [
+            { id: 1, text: 'All Beginner features', enabled: true },
+            { id: 2, text: 'Advanced kata training', enabled: true },
+            { id: 3, text: 'Kumite techniques', enabled: true },
+            { id: 4, text: 'Priority support', enabled: true }
+        ],
+        elite: [
+            { id: 1, text: 'All Advanced features', enabled: true },
+            { id: 2, text: '1-on-1 coaching sessions', enabled: true },
+            { id: 3, text: 'Exclusive content', enabled: true },
+            { id: 4, text: 'Personalized training plan', enabled: true }
+        ]
+    };
+    localStorage.setItem('karateFeatures', JSON.stringify(defaultFeatures));
+    return defaultFeatures;
+}
+
+// Save features to localStorage
+function saveFeatures(features) {
+    localStorage.setItem('karateFeatures', JSON.stringify(features));
+}
+
+// Load features into the UI
+function loadFeaturesUI() {
+    const features = getFeatures();
+    
+    ['beginner', 'advanced', 'elite'].forEach(plan => {
+        const container = document.getElementById(plan + 'FeaturesList');
+        if (container) {
+            container.innerHTML = '';
+            features[plan].forEach((feature, index) => {
+                const featureEl = document.createElement('div');
+                featureEl.className = 'feature-item' + (feature.enabled ? '' : ' disabled');
+                featureEl.innerHTML = `
+                    <div class="feature-toggle ${feature.enabled ? 'active' : ''}" onclick="toggleFeature('${plan}', ${index})"></div>
+                    <input type="text" class="feature-text" value="${feature.text}" onchange="editFeature('${plan}', ${index}, this.value)">
+                    <button class="feature-delete" onclick="deleteFeature('${plan}', ${index})"><i class="fas fa-trash"></i></button>
+                `;
+                container.appendChild(featureEl);
+            });
+        }
+    });
+}
+
+// Toggle feature on/off
+function toggleFeature(plan, index) {
+    const features = getFeatures();
+    features[plan][index].enabled = !features[plan][index].enabled;
+    saveFeatures(features);
+    loadFeaturesUI();
+}
+
+// Edit feature text
+function editFeature(plan, index, newText) {
+    const features = getFeatures();
+    features[plan][index].text = newText;
+    saveFeatures(features);
+}
+
+// Delete feature
+function deleteFeature(plan, index) {
+    const features = getFeatures();
+    features[plan].splice(index, 1);
+    saveFeatures(features);
+    loadFeaturesUI();
+}
+
+// Add new feature
+function addFeature(plan) {
+    const input = document.getElementById(plan + 'NewFeature');
+    const newFeature = input.value.trim();
+    
+    if (newFeature) {
+        const features = getFeatures();
+        features[plan].push({
+            id: Date.now(),
+            text: newFeature,
+            enabled: true
+        });
+        saveFeatures(features);
+        input.value = '';
+        loadFeaturesUI();
+    }
+}
+
+// Get features as text array for pricing
+function getFeaturesAsText(plan) {
+    const features = getFeatures();
+    return features[plan].filter(f => f.enabled).map(f => f.text);
+}
+
+// Set features from text array
+function setFeaturesFromText(plan, textArray) {
+    const features = getFeatures();
+    features[plan] = textArray.map((text, index) => ({
+        id: Date.now() + index,
+        text: text,
+        enabled: true
+    }));
+    saveFeatures(features);
+}
+
 // Save members to localStorage
 function saveMembers(members) {
     localStorage.setItem('karateMembers', JSON.stringify(members));
@@ -589,15 +704,21 @@ function loadPricing() {
     
     document.getElementById('beginnerPrice').value = pricing.beginner.price;
     document.getElementById('beginnerDiscount').value = pricing.beginner.discount;
+    document.getElementById('beginnerFeatures').value = (pricing.beginner.features || []).join('\n');
     updatePricePreview('beginner');
     
     document.getElementById('advancedPrice').value = pricing.advanced.price;
     document.getElementById('advancedDiscount').value = pricing.advanced.discount;
+    document.getElementById('advancedFeatures').value = (pricing.advanced.features || []).join('\n');
     updatePricePreview('advanced');
     
     document.getElementById('elitePrice').value = pricing.elite.price;
     document.getElementById('eliteDiscount').value = pricing.elite.discount;
+    document.getElementById('eliteFeatures').value = (pricing.elite.features || []).join('\n');
     updatePricePreview('elite');
+    
+    // Load features UI
+    loadFeaturesUI();
 }
 
 // Get pricing from localStorage
@@ -606,11 +727,23 @@ function getPricing() {
     if (stored) {
         return JSON.parse(stored);
     }
-    // Default pricing
+    // Default pricing with features
     return {
-        beginner: { price: 49, discount: 0 },
-        advanced: { price: 89, discount: 0 },
-        elite: { price: 149, discount: 0 }
+        beginner: { 
+            price: 49, 
+            discount: 0,
+            features: ['Basic training videos', 'Beginner kata tutorials', 'Community access']
+        },
+        advanced: { 
+            price: 89, 
+            discount: 0,
+            features: ['All Beginner features', 'Advanced kata training', 'Kumite techniques', 'Priority support']
+        },
+        elite: { 
+            price: 149, 
+            discount: 0,
+            features: ['All Advanced features', '1-on-1 coaching sessions', 'Exclusive content', 'Personalized training plan']
+        }
     };
 }
 
@@ -639,18 +772,24 @@ function updatePricePreview(plan) {
 document.getElementById('pricingForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    // Get features from the new features UI
+    const features = getFeatures();
+    
     const pricing = {
         beginner: {
             price: parseFloat(document.getElementById('beginnerPrice').value),
-            discount: parseFloat(document.getElementById('beginnerDiscount').value)
+            discount: parseFloat(document.getElementById('beginnerDiscount').value),
+            features: features.beginner.filter(f => f.enabled).map(f => f.text)
         },
         advanced: {
             price: parseFloat(document.getElementById('advancedPrice').value),
-            discount: parseFloat(document.getElementById('advancedDiscount').value)
+            discount: parseFloat(document.getElementById('advancedDiscount').value),
+            features: features.advanced.filter(f => f.enabled).map(f => f.text)
         },
         elite: {
             price: parseFloat(document.getElementById('elitePrice').value),
-            discount: parseFloat(document.getElementById('eliteDiscount').value)
+            discount: parseFloat(document.getElementById('eliteDiscount').value),
+            features: features.elite.filter(f => f.enabled).map(f => f.text)
         }
     };
     
@@ -670,12 +809,23 @@ function updateSitePricing(pricing) {
     planCards.forEach(card => {
         const header = card.querySelector('.plan-header h3');
         const amount = card.querySelector('.plan-price .amount');
+        const featuresList = card.querySelector('.plan-features');
         
         if (header && amount) {
             const planName = header.textContent.toLowerCase();
             if (pricing[planName]) {
                 const finalPrice = pricing[planName].price - (pricing[planName].price * pricing[planName].discount / 100);
                 amount.textContent = finalPrice.toFixed(0);
+                
+                // Update features list
+                if (featuresList && pricing[planName].features) {
+                    featuresList.innerHTML = '';
+                    pricing[planName].features.forEach(feature => {
+                        const li = document.createElement('li');
+                        li.innerHTML = '<i class="fas fa-check"></i> ' + feature;
+                        featuresList.appendChild(li);
+                    });
+                }
             }
         }
     });

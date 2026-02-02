@@ -262,16 +262,92 @@ function getPricing() {
         return JSON.parse(stored);
     }
     return {
-        beginner: { price: 49, discount: 0 },
-        advanced: { price: 89, discount: 0 },
-        elite: { price: 149, discount: 0 }
+        beginner: { 
+            price: 49, 
+            discount: 0,
+            features: ['Basic training videos', 'Beginner kata tutorials', 'Community access']
+        },
+        advanced: { 
+            price: 89, 
+            discount: 0,
+            features: ['All Beginner features', 'Advanced kata training', 'Kumite techniques', 'Priority support']
+        },
+        elite: { 
+            price: 149, 
+            discount: 0,
+            features: ['All Advanced features', '1-on-1 coaching sessions', 'Exclusive content', 'Personalized training plan']
+        }
     };
 }
 
 // Load saved pricing and update display
 function loadSavedPricing() {
     const pricing = getPricing();
+    const container = document.getElementById('plansContainer');
     
+    if (!container) {
+        // Fallback to old method if container not found
+        updateExistingPlanCards(pricing);
+        return;
+    }
+    
+    // Plan configurations
+    const planConfigs = {
+        beginner: {
+            icon: 'fas fa-star',
+            title: 'Beginner',
+            featured: false,
+            btnClass: 'btn btn-outline',
+            btnText: 'Select Plan'
+        },
+        advanced: {
+            icon: 'fas fa-crown',
+            title: 'Advanced',
+            featured: true,
+            badge: 'Most Popular',
+            btnClass: 'btn btn-primary',
+            btnText: 'Select Plan'
+        },
+        elite: {
+            icon: 'fas fa-dragon',
+            title: 'Elite',
+            featured: false,
+            btnClass: 'btn btn-outline',
+            btnText: 'Select Plan'
+        }
+    };
+    
+    // Generate plan cards
+    container.innerHTML = Object.keys(planConfigs).map(planKey => {
+        const plan = pricing[planKey] || { price: 49, discount: 0, features: ['Basic features'] };
+        const config = planConfigs[planKey];
+        const finalPrice = plan.price - (plan.price * plan.discount / 100);
+        const features = plan.features || [];
+        
+        return `
+            <div class="plan-card ${config.featured ? 'featured' : ''}">
+                ${config.badge ? `<div class="popular-badge">${config.badge}</div>` : ''}
+                <div class="plan-header">
+                    <i class="${config.icon}"></i>
+                    <h3>${config.title}</h3>
+                </div>
+                <div class="plan-price">
+                    <span class="currency">₹</span>
+                    <span class="amount">${finalPrice.toFixed(0)}</span>
+                    <span class="period">/month</span>
+                    ${plan.discount > 0 ? `<span class="original-price" style="text-decoration: line-through; color: #999; margin-left: 0.5rem; font-size: 0.9rem;">₹${plan.price}</span>` : ''}
+                </div>
+                <ul class="plan-features">
+                    ${features.map(f => `<li><i class="fas fa-check"></i> ${f}</li>`).join('')}
+                </ul>
+                <button class="${config.btnClass}" onclick="selectPlan('${planKey}')">${config.btnText}</button>
+            </div>
+        `;
+    }).join('');
+}
+
+// Update existing plan cards (fallback)
+function updateExistingPlanCards(pricing) {
     const planCards = document.querySelectorAll('.plan-card');
     
     planCards.forEach(card => {

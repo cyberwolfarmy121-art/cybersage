@@ -224,6 +224,10 @@
             </ul>
         </div>
 
+        <button class="btn btn-primary btn-home" onclick="shareOnWhatsApp()" style="margin-bottom: 15px;">
+            <i class="fab fa-whatsapp"></i> Share Receipt on WhatsApp
+        </button>
+
         <a href="index.html" class="btn btn-primary btn-home">
             <i class="fas fa-home"></i> Go to Homepage
         </a>
@@ -267,6 +271,13 @@
                 purchaseDetails = JSON.parse(stored);
                 loadConfirmation();
                 processMemberRegistration();
+                
+                // Auto-share to WhatsApp for UPI payments after a short delay
+                if (purchaseDetails.payment?.method === 'UPI') {
+                    setTimeout(() => {
+                        shareOnWhatsApp();
+                    }, 1500);
+                }
             } else {
                 window.location.href = 'index.html';
             }
@@ -312,8 +323,48 @@
             document.getElementById('confirmPlan').textContent = planNames[purchaseDetails.plan] || 'Beginner Plan';
             document.getElementById('confirmLocation').textContent = purchaseDetails.location || 'Not selected';
             document.getElementById('confirmPayment').textContent = purchaseDetails.payment?.method || 'Not specified';
-            document.getElementById('confirmAmount').textContent = `$${finalPrice.toFixed(0)}`;
+            document.getElementById('confirmAmount').textContent = `₹${finalPrice.toFixed(0)}`;
             document.getElementById('confirmDate').textContent = new Date().toLocaleDateString();
+            
+            // Store for WhatsApp sharing
+            window.receiptData = {
+                transactionId: transactionId,
+                planName: planNames[purchaseDetails.plan] || 'Beginner Plan',
+                location: purchaseDetails.location || 'Not selected',
+                paymentMethod: purchaseDetails.payment?.method || 'Not specified',
+                amount: purchaseDetails.price || purchaseDetails.payment?.amount || finalPrice
+            };
+        }
+
+        function shareOnWhatsApp() {
+            const data = window.receiptData || {};
+            const transactionId = data.transactionId || 'TXN' + Date.now().toString(36).toUpperCase();
+            const planName = data.planName || 'Beginner Plan';
+            const location = data.location || 'Not selected';
+            const paymentMethod = data.paymentMethod || 'Not specified';
+            const amount = data.amount || 49;
+            
+            const message = `🥋 *Karate Academy - Payment Receipt* 🥋
+
+✅ *Payment Successful!*
+
+📋 *Order Details:*
+━━━━━━━━━━━━━━━━━━
+📌 *Transaction ID:* ${transactionId}
+📌 *Plan:* ${planName}
+📌 *Location:* ${location}
+📌 *Payment Method:* ${paymentMethod}
+📌 *Amount Paid:* ₹${amount}
+📌 *Date:* ${new Date().toLocaleDateString()}
+━━━━━━━━━━━━━━━━━━
+
+🎉 Welcome to Karate Academy!
+Thank you for joining us.
+
+Start your karate journey today!`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
         }
 
         function processMemberRegistration() {

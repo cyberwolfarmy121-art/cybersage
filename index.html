@@ -406,74 +406,8 @@
         <h2>Membership Plans</h2>
         <p class="section-subtitle">Choose the plan that fits your goals</p>
         
-        <div class="plans-container">
-            <!-- Basic Plan -->
-            <div class="plan-card">
-                <div class="plan-header">
-                    <i class="fas fa-star"></i>
-                    <h3>Beginner</h3>
-                </div>
-                <div class="plan-price">
-                    <span class="currency">$</span>
-                    <span class="amount">49</span>
-                    <span class="period">/month</span>
-                </div>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> 2 classes per week</li>
-                    <li><i class="fas fa-check"></i> Beginner curriculum</li>
-                    <li><i class="fas fa-check"></i> Access to practice area</li>
-                    <li><i class="fas fa-check"></i> uniform (Gi)</li>
-                    <li class="disabled"><i class="fas fa-times"></i> Private lessons</li>
-                    <li class="disabled"><i class="fas fa-times"></i> Competition training</li>
-                </ul>
-                <button class="btn btn-outline" onclick="selectPlan('beginner')">Select Plan</button>
-            </div>
-
-            <!-- Pro Plan -->
-            <div class="plan-card featured">
-                <div class="popular-badge">Most Popular</div>
-                <div class="plan-header">
-                    <i class="fas fa-crown"></i>
-                    <h3>Advanced</h3>
-                </div>
-                <div class="plan-price">
-                    <span class="currency">$</span>
-                    <span class="amount">89</span>
-                    <span class="period">/month</span>
-                </div>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> 4 classes per week</li>
-                    <li><i class="fas fa-check"></i> All curriculum levels</li>
-                    <li><i class="fas fa-check"></i> Full facility access</li>
-                    <li><i class="fas fa-check"></i> Priority scheduling</li>
-                    <li><i class="fas fa-check"></i> 2 private lessons/month</li>
-                    <li class="disabled"><i class="fas fa-times"></i> Competition training</li>
-                </ul>
-                <button class="btn btn-primary" onclick="selectPlan('advanced')">Select Plan</button>
-            </div>
-
-            <!-- Elite Plan -->
-            <div class="plan-card">
-                <div class="plan-header">
-                    <i class="fas fa-dragon"></i>
-                    <h3>Elite</h3>
-                </div>
-                <div class="plan-price">
-                    <span class="currency">$</span>
-                    <span class="amount">149</span>
-                    <span class="period">/month</span>
-                </div>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> Unlimited classes</li>
-                    <li><i class="fas fa-check"></i> All curriculum levels</li>
-                    <li><i class="fas fa-check"></i> 24/7 facility access</li>
-                    <li><i class="fas fa-check"></i> Personal mentor</li>
-                    <li><i class="fas fa-check"></i> Unlimited private lessons</li>
-                    <li><i class="fas fa-check"></i> Competition training</li>
-                    <li><i class="fas fa-check"></i> Black above kata</li>
-                </ul>
-                <button class="btn btn-outline" onclick="selectPlan('elite')">Select Plan</button>
-            </div>
+        <div class="plans-container" id="plansContainer">
+            <!-- Plans will be loaded dynamically -->
         </div>
     </section>
 
