@@ -266,49 +266,35 @@ const ADMIN_PASS = 'kK';
 
 // Check if already logged in
 if (localStorage.getItem('adminLoggedIn') === 'true') {
-    console.log('Already logged in, showing admin panel');
     showAdminPanel();
 }
 
-// Login Form Handler - wait for DOM to be ready
-document.addEventListener('DOMContentLoaded', function() {
+// Setup login form immediately (script is at end of body)
+(function setupLogin() {
     const loginForm = document.getElementById('loginForm');
-    console.log('Login form found:', !!loginForm);
-    
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Login form submitted');
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorEl = document.getElementById('loginError');
             
-            console.log('Username:', username);
-            console.log('Expected user:', ADMIN_USER);
-            console.log('Password match:', password === ADMIN_PASS);
-            
             if (username === ADMIN_USER && password === ADMIN_PASS) {
-                console.log('Login successful!');
                 localStorage.setItem('adminLoggedIn', 'true');
                 showAdminPanel();
                 if (errorEl) errorEl.textContent = '';
             } else {
-                console.log('Login failed - invalid credentials');
                 if (errorEl) errorEl.textContent = 'Invalid username or password';
             }
         });
     }
-});
+})();
 
 // Show Admin Panel
 function showAdminPanel() {
-    console.log('Showing admin panel');
     const loginSection = document.getElementById('loginSection');
     const adminPanel = document.getElementById('adminPanel');
-    console.log('Login section:', !!loginSection);
-    console.log('Admin panel:', !!adminPanel);
-    
     if (loginSection) loginSection.style.display = 'none';
     if (adminPanel) adminPanel.style.display = 'block';
     loadVideos();
@@ -324,9 +310,12 @@ function showAdminPanel() {
 // Logout
 function logout() {
     localStorage.removeItem('adminLoggedIn');
-    document.getElementById('loginSection').style.display = 'flex';
-    document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('loginForm').reset();
+    const loginSection = document.getElementById('loginSection');
+    const adminPanel = document.getElementById('adminPanel');
+    const loginForm = document.getElementById('loginForm');
+    if (loginSection) loginSection.style.display = 'flex';
+    if (adminPanel) adminPanel.style.display = 'none';
+    if (loginForm) loginForm.reset();
 }
 
 // Show Admin Section
@@ -338,8 +327,13 @@ function showAdminSection(section) {
         el.classList.remove('active');
     });
     
-    document.getElementById('admin' + capitalizeFirst(section)).style.display = 'block';
-    event.target.classList.add('active');
+    const sectionEl = document.getElementById('admin' + capitalizeFirst(section));
+    if (sectionEl) {
+        sectionEl.style.display = 'block';
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+    }
     
     if (section === 'settings') {
         loadSettings();
@@ -361,9 +355,14 @@ function loadVideos(filter = 'all') {
     }
     
     // Update stats
-    document.getElementById('totalVideos').textContent = videos.length;
-    document.getElementById('freeVideos').textContent = videos.filter(v => v.level === 'free').length;
-    document.getElementById('lockedVideos').textContent = videos.filter(v => v.level === 'locked').length;
+    const totalEl = document.getElementById('totalVideos');
+    const freeEl = document.getElementById('freeVideos');
+    const lockedEl = document.getElementById('lockedVideos');
+    if (totalEl) totalEl.textContent = videos.length;
+    if (freeEl) freeEl.textContent = videos.filter(v => v.level === 'free').length;
+    if (lockedEl) lockedEl.textContent = videos.filter(v => v.level === 'locked').length;
+    
+    if (!container) return;
     
     if (filteredVideos.length === 0) {
         container.innerHTML = `
@@ -405,7 +404,9 @@ function filterVideos(category) {
     document.querySelectorAll('.filter-tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
     loadVideos(category);
 }
 
@@ -413,6 +414,8 @@ function filterVideos(category) {
 function loadMasters() {
     const masters = getMasters();
     const container = document.getElementById('mastersList');
+    
+    if (!container) return;
     
     if (masters.length === 0) {
         container.innerHTML = `
@@ -451,6 +454,8 @@ function loadChampions() {
     const champions = getChampions();
     const container = document.getElementById('championsList');
     
+    if (!container) return;
+    
     if (champions.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
@@ -487,6 +492,8 @@ function loadChampions() {
 function loadAwarded() {
     const awarded = getAwarded();
     const container = document.getElementById('awardedList');
+    
+    if (!container) return;
     
     if (awarded.length === 0) {
         container.innerHTML = `
@@ -526,15 +533,21 @@ function loadMembers(filter = 'all') {
     const container = document.getElementById('membersList');
     
     // Update stats
-    document.getElementById('totalMembers').textContent = members.length;
-    document.getElementById('beginnerMembers').textContent = members.filter(m => m.plan === 'beginner').length;
-    document.getElementById('advancedMembers').textContent = members.filter(m => m.plan === 'advanced').length;
-    document.getElementById('eliteMembers').textContent = members.filter(m => m.plan === 'elite').length;
+    const totalEl = document.getElementById('totalMembers');
+    const beginnerEl = document.getElementById('beginnerMembers');
+    const advancedEl = document.getElementById('advancedMembers');
+    const eliteEl = document.getElementById('eliteMembers');
+    if (totalEl) totalEl.textContent = members.length;
+    if (beginnerEl) beginnerEl.textContent = members.filter(m => m.plan === 'beginner').length;
+    if (advancedEl) advancedEl.textContent = members.filter(m => m.plan === 'advanced').length;
+    if (eliteEl) eliteEl.textContent = members.filter(m => m.plan === 'elite').length;
     
     let filteredMembers = members;
     if (filter !== 'all') {
         filteredMembers = members.filter(m => m.plan === filter);
     }
+    
+    if (!container) return;
     
     if (filteredMembers.length === 0) {
         container.innerHTML = `
@@ -557,12 +570,11 @@ function loadMembers(filter = 'all') {
                     <span><i class="fas fa-envelope"></i> ${member.email}</span>
                     <span><i class="fas fa-phone"></i> ${member.phone || 'N/A'}</span>
                 </div>
-                <p class="video-item-desc">Joined: ${member.joinDate} | Status: ${member.status}</p>
                 <div class="video-item-actions">
-                    <button class="btn-edit" onclick="showUpgradeModal(${member.id}, '${member.name}')">
-                        <i class="fas fa-arrow-up"></i> Upgrade
+                    <button class="btn-edit" onclick="viewMember(${member.id})">
+                        <i class="fas fa-eye"></i> View
                     </button>
-                    <button class="btn-delete" onclick="deleteGalleryPrompt(${member.id}, 'members')">
+                    <button class="btn-delete" onclick="deleteMemberPrompt(${member.id})">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -571,339 +583,282 @@ function loadMembers(filter = 'all') {
     `).join('');
 }
 
+// Add Video
+function addVideo() {
+    const title = document.getElementById('newVideoTitle').value;
+    const category = document.getElementById('newVideoCategory').value;
+    const duration = document.getElementById('newVideoDuration').value;
+    const level = document.getElementById('newVideoLevel').value;
+    const description = document.getElementById('newVideoDescription').value;
+    
+    if (!title || !category || !duration) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    const videos = getVideos();
+    const newVideo = {
+        id: Date.now(),
+        title: title,
+        category: category,
+        duration: duration,
+        level: level,
+        description: description
+    };
+    
+    videos.push(newVideo);
+    saveVideos(videos);
+    loadVideos();
+    
+    // Clear form
+    document.getElementById('newVideoTitle').value = '';
+    document.getElementById('newVideoCategory').value = '';
+    document.getElementById('newVideoDuration').value = '';
+    document.getElementById('newVideoLevel').value = 'free';
+    document.getElementById('newVideoDescription').value = '';
+    
+    alert('Video added successfully!');
+}
+
+// Edit Video
+function editVideo(id) {
+    const videos = getVideos();
+    const video = videos.find(v => v.id === id);
+    
+    if (!video) return;
+    
+    const newTitle = prompt('Edit Title:', video.title);
+    if (newTitle === null) return;
+    
+    const newCategory = prompt('Edit Category (kata, beginner, kumite):', video.category);
+    if (newCategory === null) return;
+    
+    const newDuration = prompt('Edit Duration (e.g., 3:45):', video.duration);
+    if (newDuration === null) return;
+    
+    const newLevel = confirm('Click OK for "Locked" (Members Only), Cancel for "Free"') ? 'locked' : 'free';
+    
+    const newDescription = prompt('Edit Description:', video.description);
+    
+    video.title = newTitle || video.title;
+    video.category = newCategory || video.category;
+    video.duration = newDuration || video.duration;
+    video.level = newLevel;
+    video.description = newDescription !== null ? newDescription : video.description;
+    
+    saveVideos(videos);
+    loadVideos();
+    alert('Video updated successfully!');
+}
+
+// Delete Video
+function deleteVideoPrompt(id) {
+    if (confirm('Are you sure you want to delete this video?')) {
+        let videos = getVideos();
+        videos = videos.filter(v => v.id !== id);
+        saveVideos(videos);
+        loadVideos();
+        alert('Video deleted successfully!');
+    }
+}
+
+// Add Gallery Item (Master, Champion, Award)
+function addGalleryItem(type) {
+    const name = document.getElementById('new' + capitalizeFirst(type) + 'Name').value;
+    const subtitle = document.getElementById('new' + capitalizeFirst(type) + 'Subtitle').value;
+    const tag = document.getElementById('new' + capitalizeFirst(type) + 'Tag').value;
+    const medal = type === 'champions' ? document.getElementById('newChampionMedal').value : null;
+    
+    if (!name) {
+        alert('Please enter a name');
+        return;
+    }
+    
+    let items;
+    switch(type) {
+        case 'masters':
+            items = getMasters();
+            items.push({ id: Date.now(), name: name, subtitle: subtitle, tag: tag || 'Master' });
+            saveMasters(items);
+            break;
+        case 'champions':
+            items = getChampions();
+            items.push({ id: Date.now(), name: name, subtitle: subtitle, tag: tag || 'Champion', medal: medal || 'gold' });
+            saveChampions(items);
+            break;
+        case 'awarded':
+            items = getAwarded();
+            items.push({ id: Date.now(), name: name, subtitle: subtitle, tag: tag || 'Award' });
+            saveAwarded(items);
+            break;
+    }
+    
+    loadGallery(type);
+    
+    // Clear form
+    document.getElementById('new' + capitalizeFirst(type) + 'Name').value = '';
+    document.getElementById('new' + capitalizeFirst(type) + 'Subtitle').value = '';
+    document.getElementById('new' + capitalizeFirst(type) + 'Tag').value = '';
+    if (type === 'champions') {
+        document.getElementById('newChampionMedal').value = 'gold';
+    }
+    
+    alert(capitalizeFirst(type) + ' added successfully!');
+}
+
+// Edit Gallery Item
+function editGallery(id, type) {
+    let items, item;
+    switch(type) {
+        case 'masters':
+            items = getMasters();
+            item = items.find(i => i.id === id);
+            if (item) {
+                const newName = prompt('Edit Name:', item.name);
+                if (newName !== null) {
+                    item.name = newName;
+                    const newSubtitle = prompt('Edit Subtitle:', item.subtitle);
+                    if (newSubtitle !== null) item.subtitle = newSubtitle;
+                    const newTag = prompt('Edit Tag:', item.tag);
+                    if (newTag !== null) item.tag = newTag;
+                    saveMasters(items);
+                    loadGallery(type);
+                }
+            }
+            break;
+        case 'champions':
+            items = getChampions();
+            item = items.find(i => i.id === id);
+            if (item) {
+                const newName = prompt('Edit Name:', item.name);
+                if (newName !== null) {
+                    item.name = newName;
+                    const newSubtitle = prompt('Edit Subtitle:', item.subtitle);
+                    if (newSubtitle !== null) item.subtitle = newSubtitle;
+                    const newTag = prompt('Edit Tag:', item.tag);
+                    if (newTag !== null) item.tag = newTag;
+                    const newMedal = prompt('Edit Medal (gold, silver, bronze):', item.medal);
+                    if (newMedal !== null) item.medal = newMedal;
+                    saveChampions(items);
+                    loadGallery(type);
+                }
+            }
+            break;
+        case 'awarded':
+            items = getAwarded();
+            item = items.find(i => i.id === id);
+            if (item) {
+                const newName = prompt('Edit Name:', item.name);
+                if (newName !== null) {
+                    item.name = newName;
+                    const newSubtitle = prompt('Edit Subtitle:', item.subtitle);
+                    if (newSubtitle !== null) item.subtitle = newSubtitle;
+                    const newTag = prompt('Edit Year:', item.tag);
+                    if (newTag !== null) item.tag = newTag;
+                    saveAwarded(items);
+                    loadGallery(type);
+                }
+            }
+            break;
+    }
+}
+
+// Delete Gallery Item
+function deleteGalleryPrompt(id, type) {
+    if (confirm('Are you sure you want to delete this ' + type.slice(0, -1) + '?')) {
+        switch(type) {
+            case 'masters':
+                let masters = getMasters();
+                masters = masters.filter(m => m.id !== id);
+                saveMasters(masters);
+                loadGallery(type);
+                break;
+            case 'champions':
+                let champions = getChampions();
+                champions = champions.filter(c => c.id !== id);
+                saveChampions(champions);
+                loadGallery(type);
+                break;
+            case 'awarded':
+                let awarded = getAwarded();
+                awarded = awarded.filter(a => a.id !== id);
+                saveAwarded(awarded);
+                loadGallery(type);
+                break;
+        }
+        alert(capitalizeFirst(type.slice(0, -1)) + ' deleted successfully!');
+    }
+}
+
+// View Member Details
+function viewMember(id) {
+    const members = getMembers();
+    const member = members.find(m => m.id === id);
+    
+    if (!member) return;
+    
+    alert(`Member Details:\n\nName: ${member.name}\nEmail: ${member.email}\nPhone: ${member.phone || 'N/A'}\nPlan: ${capitalizeFirst(member.plan)}\nJoin Date: ${member.joinDate}\nStatus: ${capitalizeFirst(member.status)}`);
+}
+
+// Delete Member
+function deleteMemberPrompt(id) {
+    if (confirm('Are you sure you want to delete this member?')) {
+        let members = getMembers();
+        members = members.filter(m => m.id !== id);
+        saveMembers(members);
+        loadMembers();
+        alert('Member deleted successfully!');
+    }
+}
+
 // Filter Members
 function filterMembers(plan) {
-    document.querySelectorAll('#adminMembers .filter-tab').forEach(tab => {
+    document.querySelectorAll('.filter-tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
     loadMembers(plan);
 }
 
-// Show Add Member Modal
-function showAddMemberModal() {
-    document.getElementById('memberModalTitle').textContent = 'Add New Member';
-    document.getElementById('memberForm').reset();
-    document.getElementById('editMemberId').value = '';
-    document.getElementById('memberModal').style.display = 'flex';
-}
-
-// Close Member Modal
-function closeMemberModal() {
-    document.getElementById('memberModal').style.display = 'none';
-}
-
-// Member Form Submit
-document.getElementById('memberForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const editId = document.getElementById('editMemberId').value;
-    const memberData = {
-        name: document.getElementById('memberName').value,
-        email: document.getElementById('memberEmail').value,
-        phone: document.getElementById('memberPhone').value,
-        plan: document.getElementById('memberPlan').value,
-        joinDate: new Date().toISOString().split('T')[0],
-        status: 'active'
-    };
-    
-    let members = getMembers();
-    
-    if (editId) {
-        const index = members.findIndex(m => m.id === parseInt(editId));
-        if (index !== -1) {
-            members[index] = { ...members[index], ...memberData };
-        }
-    } else {
-        const newId = Date.now();
-        members.push({ id: newId, ...memberData });
-    }
-    
-    saveMembers(members);
-    closeMemberModal();
-    loadMembers();
-    alert(editId ? 'Member updated successfully!' : 'Member added successfully!');
-});
-
-// Show Upgrade Modal
-function showUpgradeModal(id, name) {
-    document.getElementById('upgradeMemberId').value = id;
-    document.getElementById('upgradeMemberName').textContent = `Upgrade membership for: ${name}`;
-    document.getElementById('upgradeModal').style.display = 'flex';
-}
-
-// Close Upgrade Modal
-function closeUpgradeModal() {
-    document.getElementById('upgradeModal').style.display = 'none';
-}
-
-// Upgrade Form Submit
-document.getElementById('upgradeForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const id = parseInt(document.getElementById('upgradeMemberId').value);
-    const newPlan = document.getElementById('newPlan').value;
-    
-    let members = getMembers();
-    const index = members.findIndex(m => m.id === id);
-    
-    if (index !== -1) {
-        members[index].plan = newPlan;
-        saveMembers(members);
-        closeUpgradeModal();
-        loadMembers();
-        alert(`Member upgraded to ${capitalizeFirst(newPlan)} plan successfully!`);
-    }
-});
-
-// Load Settings
-function loadSettings() {
-    const settings = getSettings();
-    
-    // Logo settings
-    document.getElementById('siteName').value = settings.siteName || '';
-    document.getElementById('logoIcon').value = settings.logoIcon || 'fas fa-fist-raised';
-    
-    // Logo image preview
-    const logoPreview = document.getElementById('logoImagePreview');
-    if (settings.logoImage) {
-        logoPreview.innerHTML = '<img src="' + settings.logoImage + '" alt="Logo Preview">';
-    } else {
-        logoPreview.innerHTML = '';
-    }
-    
-    // Contact settings
-    document.getElementById('contactAddress').value = settings.contactAddress || '';
-    document.getElementById('contactPhone').value = settings.contactPhone || '';
-    document.getElementById('contactEmail').value = settings.contactEmail || '';
-    document.getElementById('contactHours').value = settings.contactHours || '';
-}
-
-// Preview logo image
-function previewLogoImage(input) {
-    const preview = document.getElementById('logoImagePreview');
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = '<img src="' + e.target.result + '" alt="Logo Preview">';
-        };
-        reader.readAsDataURL(input.files[0]);
+// Load Gallery
+function loadGallery(type) {
+    switch(type) {
+        case 'masters':
+            loadMasters();
+            break;
+        case 'champions':
+            loadChampions();
+            break;
+        case 'awarded':
+            loadAwarded();
+            break;
     }
 }
 
-// Preview gallery image
-function previewGalleryImage(input) {
-    const preview = document.getElementById('galleryImagePreview');
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = '<img src="' + e.target.result + '" alt="Image Preview">';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
+// Capitalize first letter
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Preview video thumbnail
-function previewVideoThumbnail(input) {
-    const preview = document.getElementById('videoThumbnailPreview');
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = '<img src="' + e.target.result + '" alt="Video Thumbnail Preview">';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Show video image gallery modal
-function showVideoImageGalleryModal() {
-    const modal = document.getElementById('imageGalleryModal');
-    const grid = document.getElementById('imageGalleryGrid');
-    
-    // Collect all images from all galleries
-    const masters = getMasters();
-    const champions = getChampions();
-    const awarded = getAwarded();
-    
-    const allImages = [
-        ...masters.map(m => ({ ...m, source: 'masters' })),
-        ...champions.map(c => ({ ...c, source: 'champions' })),
-        ...awarded.map(a => ({ ...a, source: 'awarded' }))
-    ];
-    
-    // Filter only items with images
-    const imagesWithData = allImages.filter(item => item.image);
-    
-    if (imagesWithData.length === 0) {
-        grid.innerHTML = '';
-    } else {
-        grid.innerHTML = imagesWithData.map(item => `
-            <div class="gallery-image-item" onclick="selectVideoThumbnail('${item.image.replace(/'/g, "\\'")}', '${item.name.replace(/'/g, "\\'")}')">
-                <img src="${item.image}" alt="${item.name}">
-                <div class="image-name">${item.name}</div>
-            </div>
-        `).join('');
-    }
-    
-    modal.style.display = 'flex';
-}
-
-// Select video thumbnail from gallery
-function selectVideoThumbnail(imageData, imageName) {
-    const thumbnailInput = document.getElementById('videoThumbnail');
-    const preview = document.getElementById('videoThumbnailPreview');
-    
-    thumbnailInput.setAttribute('data-gallery-image', imageData);
-    preview.innerHTML = `<img src="${imageData}" alt="Selected thumbnail"><p style="margin-top: 0.5rem; color: #27ae60;"><i class="fas fa-check"></i> Selected: ${imageName}</p>`;
-    
-    closeImageGalleryModal();
-}
-
-// Load Pricing
-function loadPricing() {
-    const pricing = getPricing();
-    
-    document.getElementById('beginnerPrice').value = pricing.beginner.price;
-    document.getElementById('beginnerDiscount').value = pricing.beginner.discount;
-    document.getElementById('beginnerFeatures').value = (pricing.beginner.features || []).join('\n');
-    updatePricePreview('beginner');
-    
-    document.getElementById('advancedPrice').value = pricing.advanced.price;
-    document.getElementById('advancedDiscount').value = pricing.advanced.discount;
-    document.getElementById('advancedFeatures').value = (pricing.advanced.features || []).join('\n');
-    updatePricePreview('advanced');
-    
-    document.getElementById('elitePrice').value = pricing.elite.price;
-    document.getElementById('eliteDiscount').value = pricing.elite.discount;
-    document.getElementById('eliteFeatures').value = (pricing.elite.features || []).join('\n');
-    updatePricePreview('elite');
-    
-    // Load features UI
-    loadFeaturesUI();
-}
-
-// Get pricing from localStorage
-function getPricing() {
-    const stored = localStorage.getItem('karatePricing');
+// Settings Management
+function getSettings() {
+    const stored = localStorage.getItem('karateSettings');
     if (stored) {
         return JSON.parse(stored);
     }
-    // Default pricing with features
     return {
-        beginner: { 
-            price: 49, 
-            discount: 0,
-            features: ['Basic training videos', 'Beginner kata tutorials', 'Community access']
-        },
-        advanced: { 
-            price: 89, 
-            discount: 0,
-            features: ['All Beginner features', 'Advanced kata training', 'Kumite techniques', 'Priority support']
-        },
-        elite: { 
-            price: 149, 
-            discount: 0,
-            features: ['All Advanced features', '1-on-1 coaching sessions', 'Exclusive content', 'Personalized training plan']
-        }
+        siteName: 'Karate Academy',
+        logoImage: '',
+        logoIcon: 'fas fa-fist-raised',
+        contactAddress: '',
+        contactPhone: '',
+        contactEmail: '',
+        contactHours: ''
     };
 }
 
-// Save pricing to localStorage
-function savePricing(pricing) {
-    localStorage.setItem('karatePricing', JSON.stringify(pricing));
-    window.dispatchEvent(new Event('karateDataChange'));
-    // Sync to Firebase
-    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
-        firebaseSync.save('karateApp/pricing', pricing);
-    }
-}
-
-// Update price preview
-function updatePricePreview(plan) {
-    const price = parseFloat(document.getElementById(plan + 'Price').value) || 0;
-    const discount = parseFloat(document.getElementById(plan + 'Discount').value) || 0;
-    const finalPrice = price - (price * discount / 100);
-    
-    document.getElementById(plan + 'Original').textContent = price;
-    document.getElementById(plan + 'Final').textContent = finalPrice.toFixed(2);
-}
-
-// Add event listeners for price inputs
-['beginner', 'advanced', 'elite'].forEach(plan => {
-    document.getElementById(plan + 'Price').addEventListener('input', () => updatePricePreview(plan));
-    document.getElementById(plan + 'Discount').addEventListener('input', () => updatePricePreview(plan));
-});
-
-// Pricing Form Submit
-document.getElementById('pricingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get features from the new features UI
-    const features = getFeatures();
-    
-    const pricing = {
-        beginner: {
-            price: parseFloat(document.getElementById('beginnerPrice').value),
-            discount: parseFloat(document.getElementById('beginnerDiscount').value),
-            features: features.beginner.filter(f => f.enabled).map(f => f.text)
-        },
-        advanced: {
-            price: parseFloat(document.getElementById('advancedPrice').value),
-            discount: parseFloat(document.getElementById('advancedDiscount').value),
-            features: features.advanced.filter(f => f.enabled).map(f => f.text)
-        },
-        elite: {
-            price: parseFloat(document.getElementById('elitePrice').value),
-            discount: parseFloat(document.getElementById('eliteDiscount').value),
-            features: features.elite.filter(f => f.enabled).map(f => f.text)
-        }
-    };
-    
-    savePricing(pricing);
-    
-    // Update main site pricing
-    updateSitePricing(pricing);
-    
-    alert('Pricing settings saved successfully!');
-});
-
-// Update site pricing
-function updateSitePricing(pricing) {
-    // Update membership cards
-    const planCards = document.querySelectorAll('.plan-card');
-    
-    planCards.forEach(card => {
-        const header = card.querySelector('.plan-header h3');
-        const amount = card.querySelector('.plan-price .amount');
-        const featuresList = card.querySelector('.plan-features');
-        
-        if (header && amount) {
-            const planName = header.textContent.toLowerCase();
-            if (pricing[planName]) {
-                const finalPrice = pricing[planName].price - (pricing[planName].price * pricing[planName].discount / 100);
-                amount.textContent = finalPrice.toFixed(0);
-                
-                // Update features list
-                if (featuresList && pricing[planName].features) {
-                    featuresList.innerHTML = '';
-                    pricing[planName].features.forEach(feature => {
-                        const li = document.createElement('li');
-                        li.innerHTML = '<i class="fas fa-check"></i> ' + feature;
-                        featuresList.appendChild(li);
-                    });
-                }
-            }
-        }
-    });
-}
-
-// Get settings from localStorage
-function getSettings() {
-    const stored = localStorage.getItem('karateSettings');
-    return stored ? JSON.parse(stored) : {};
-}
-
-// Save settings to localStorage
 function saveSettings(settings) {
     localStorage.setItem('karateSettings', JSON.stringify(settings));
     window.dispatchEvent(new Event('karateDataChange'));
@@ -913,68 +868,40 @@ function saveSettings(settings) {
     }
 }
 
-// Logo Form Submit
-document.getElementById('logoForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
+function loadSettings() {
     const settings = getSettings();
-    settings.siteName = document.getElementById('siteName').value;
-    settings.logoIcon = document.getElementById('logoIcon').value;
     
-    // Handle logo image upload or gallery selection
+    const siteNameInput = document.getElementById('siteName');
     const logoImageInput = document.getElementById('logoImage');
-    const galleryImage = logoImageInput.getAttribute('data-gallery-image');
+    const contactAddressInput = document.getElementById('contactAddress');
+    const contactPhoneInput = document.getElementById('contactPhone');
+    const contactEmailInput = document.getElementById('contactEmail');
+    const contactHoursInput = document.getElementById('contactHours');
+    const logoPreview = document.getElementById('logoPreview');
     
-    if (galleryImage) {
-        // Use image selected from gallery
-        settings.logoImage = galleryImage;
-        saveSettings(settings);
-        updateSiteLogo(settings);
-        alert('Logo settings saved successfully!');
-    } else if (logoImageInput.files && logoImageInput.files[0]) {
-        // Upload new image
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            settings.logoImage = event.target.result;
-            saveSettings(settings);
-            updateSiteLogo(settings);
-            alert('Logo settings saved successfully!');
-        };
-        reader.readAsDataURL(logoImageInput.files[0]);
-    } else {
-        saveSettings(settings);
-        updateSiteLogo(settings);
-        alert('Logo settings saved successfully!');
+    if (siteNameInput) siteNameInput.value = settings.siteName || '';
+    if (logoImageInput) logoImageInput.value = settings.logoImage || '';
+    if (contactAddressInput) contactAddressInput.value = settings.contactAddress || '';
+    if (contactPhoneInput) contactPhoneInput.value = settings.contactPhone || '';
+    if (contactEmailInput) contactEmailInput.value = settings.contactEmail || '';
+    if (contactHoursInput) contactHoursInput.value = settings.contactHours || '';
+    
+    if (logoPreview && settings.logoImage) {
+        logoPreview.innerHTML = `<img src="${settings.logoImage}" alt="Logo" style="max-width: 200px; max-height: 100px;">`;
     }
-});
+    
+    updateSiteLogo(settings);
+}
 
-// Contact Form Submit
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const settings = getSettings();
-    settings.contactAddress = document.getElementById('contactAddress').value;
-    settings.contactPhone = document.getElementById('contactPhone').value;
-    settings.contactEmail = document.getElementById('contactEmail').value;
-    settings.contactHours = document.getElementById('contactHours').value;
-    
-    saveSettings(settings);
-    
-    // Update main site
-    updateContactInfo(settings);
-    
-    alert('Contact settings saved successfully!');
-});
-
-// Update site logo
 function updateSiteLogo(settings) {
     const navBrandText = document.querySelector('.nav-brand span');
     const navBrandIcon = document.querySelector('.nav-brand i');
-    const navLogoImage = document.getElementById('navLogoImage') || document.getElementById('adminNavLogoImage');
+    const navLogoImage = document.getElementById('adminNavLogoImage');
     
     if (navBrandText && settings.siteName) {
-        navBrandText.textContent = settings.siteName;
+        navBrandText.textContent = 'Admin Panel - ' + settings.siteName;
     }
+    
     if (navLogoImage && settings.logoImage) {
         navLogoImage.src = settings.logoImage;
         navLogoImage.style.display = 'block';
@@ -984,380 +911,252 @@ function updateSiteLogo(settings) {
     } else if (navBrandIcon && settings.logoIcon) {
         navBrandIcon.className = settings.logoIcon;
     }
-    
-    // Update page title
-    if (settings.siteName) {
-        document.title = settings.siteName + ' - Master the Art';
-    }
 }
 
-// Update contact info
-function updateContactInfo(settings) {
-    const contactItems = document.querySelectorAll('.contact-item');
-    
-    contactItems.forEach(item => {
-        const icon = item.querySelector('i');
-        const text = item.querySelector('p');
-        
-        if (icon && text) {
-            if (icon.classList.contains('fa-map-marker-alt') && settings.contactAddress) {
-                text.textContent = settings.contactAddress;
-            } else if (icon.classList.contains('fa-phone') && settings.contactPhone) {
-                text.textContent = settings.contactPhone;
-            } else if (icon.classList.contains('fa-envelope') && settings.contactEmail) {
-                text.textContent = settings.contactEmail;
-            } else if (icon.classList.contains('fa-clock') && settings.contactHours) {
-                text.textContent = settings.contactHours;
-            }
-        }
-    });
-}
-
-// Show Add Video Modal
-function showAddVideoModal() {
-    document.getElementById('modalTitle').textContent = 'Add New Video';
-    document.getElementById('videoForm').reset();
-    document.getElementById('editVideoId').value = '';
-    document.getElementById('videoThumbnail').removeAttribute('data-gallery-image');
-    document.getElementById('videoThumbnailPreview').innerHTML = '';
-    
-    // Check if there's a selected video from gallery
-    const selectedVideo = localStorage.getItem('selectedGalleryVideo');
-    if (selectedVideo) {
-        const video = JSON.parse(selectedVideo);
-        document.getElementById('videoTitle').value = video.title || '';
-        document.getElementById('videoCategory').value = video.category || 'kata';
-        document.getElementById('videoDuration').value = video.duration || '';
-        document.getElementById('videoLevel').value = video.level || 'free';
-        document.getElementById('videoDescription').value = video.description || '';
-        
-        if (video.thumbnail) {
-            document.getElementById('videoThumbnail').setAttribute('data-gallery-image', video.thumbnail);
-            document.getElementById('videoThumbnailPreview').innerHTML = '<img src="' + video.thumbnail + '" alt="Video Thumbnail"><p style="margin-top:0.5rem;color:#27ae60;"><i class="fas fa-check"></i> Selected from gallery</p>';
-        }
-        
-        // Clear the stored selection
-        localStorage.removeItem('selectedGalleryVideo');
-    }
-    
-    document.getElementById('videoModal').style.display = 'flex';
-}
-
-// Edit Video
-function editVideo(id) {
-    const videos = getVideos();
-    const video = videos.find(v => v.id === id);
-    
-    if (video) {
-        document.getElementById('modalTitle').textContent = 'Edit Video';
-        document.getElementById('editVideoId').value = video.id;
-        document.getElementById('videoTitle').value = video.title;
-        document.getElementById('videoCategory').value = video.category;
-        document.getElementById('videoDuration').value = video.duration;
-        document.getElementById('videoLevel').value = video.level;
-        document.getElementById('videoDescription').value = video.description;
-        document.getElementById('videoThumbnail').removeAttribute('data-gallery-image');
-        
-        // Show existing thumbnail if available
-        const thumbnailPreview = document.getElementById('videoThumbnailPreview');
-        if (video.thumbnail) {
-            thumbnailPreview.innerHTML = '<img src="' + video.thumbnail + '" alt="Video Thumbnail">';
-        } else {
-            thumbnailPreview.innerHTML = '';
-        }
-        
-        document.getElementById('videoModal').style.display = 'flex';
-    }
-}
-
-// Close Video Modal
-function closeVideoModal() {
-    document.getElementById('videoModal').style.display = 'none';
-}
-
-// Video Form Submit
-document.getElementById('videoForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const editId = document.getElementById('editVideoId').value;
-    const videoData = {
-        title: document.getElementById('videoTitle').value,
-        category: document.getElementById('videoCategory').value,
-        duration: document.getElementById('videoDuration').value,
-        level: document.getElementById('videoLevel').value,
-        description: document.getElementById('videoDescription').value
+function saveAllSettings() {
+    const settings = {
+        siteName: document.getElementById('siteName').value,
+        logoImage: document.getElementById('logoImage').value || '',
+        logoIcon: 'fas fa-fist-raised',
+        contactAddress: document.getElementById('contactAddress').value,
+        contactPhone: document.getElementById('contactPhone').value,
+        contactEmail: document.getElementById('contactEmail').value,
+        contactHours: document.getElementById('contactHours').value
     };
     
-    // Handle thumbnail
-    const thumbnailInput = document.getElementById('videoThumbnail');
-    const galleryThumbnail = thumbnailInput.getAttribute('data-gallery-image');
-    
-    const handleVideoSave = (thumbnail) => {
-        if (thumbnail) {
-            videoData.thumbnail = thumbnail;
-        }
-        
-        let videos = getVideos();
-        
-        if (editId) {
-            const index = videos.findIndex(v => v.id === parseInt(editId));
-            if (index !== -1) {
-                videos[index] = { ...videos[index], ...videoData };
-            }
-        } else {
-            const newId = Math.max(...videos.map(v => v.id), 0) + 1;
-            videos.push({ id: newId, ...videoData });
-        }
-        
-        saveVideos(videos);
-        closeVideoModal();
-        loadVideos();
-        alert(editId ? 'Video updated successfully!' : 'Video added successfully!');
-    };
-    
-    if (galleryThumbnail) {
-        handleVideoSave(galleryThumbnail);
-    } else if (thumbnailInput.files && thumbnailInput.files[0]) {
+    saveSettings(settings);
+    alert('Settings saved successfully!');
+}
+
+function handleLogoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
         const reader = new FileReader();
-        reader.onload = function(event) {
-            handleVideoSave(event.target.result);
+        reader.onload = function(e) {
+            const logoImageInput = document.getElementById('logoImage');
+            const logoPreview = document.getElementById('logoPreview');
+            
+            if (logoImageInput) {
+                logoImageInput.value = e.target.result;
+            }
+            if (logoPreview) {
+                logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo" style="max-width: 200px; max-height: 100px;">`;
+            }
+            
+            const settings = getSettings();
+            settings.logoImage = e.target.result;
+            saveSettings(settings);
+            updateSiteLogo(settings);
         };
-        reader.readAsDataURL(thumbnailInput.files[0]);
-    } else {
-        handleVideoSave(null);
-    }
-});
-
-// Delete Video Prompt
-function deleteVideoPrompt(id) {
-    document.getElementById('deleteVideoId').value = id;
-    document.getElementById('deleteModal').style.display = 'flex';
-}
-
-// Show Add Gallery Modal
-function showAddGalleryModal(type) {
-    document.getElementById('galleryModalTitle').textContent = 'Add New ' + capitalizeFirst(type.slice(0, -1));
-    document.getElementById('galleryForm').reset();
-    document.getElementById('editGalleryId').value = '';
-    document.getElementById('galleryType').value = type;
-    document.getElementById('galleryModal').style.display = 'flex';
-}
-
-// Edit Gallery
-function editGallery(id, type) {
-    let items;
-    if (type === 'masters') items = getMasters();
-    else if (type === 'champions') items = getChampions();
-    else items = getAwarded();
-    
-    const item = items.find(i => i.id === id);
-    
-    if (item) {
-        document.getElementById('galleryModalTitle').textContent = 'Edit ' + capitalizeFirst(type.slice(0, -1));
-        document.getElementById('editGalleryId').value = item.id;
-        document.getElementById('galleryType').value = type;
-        document.getElementById('galleryName').value = item.name;
-        document.getElementById('gallerySubtitle').value = item.subtitle;
-        document.getElementById('galleryTag').value = item.tag;
-        document.getElementById('galleryModal').style.display = 'flex';
+        reader.readAsDataURL(file);
     }
 }
 
-// Close Gallery Modal
-function closeGalleryModal() {
-    document.getElementById('galleryModal').style.display = 'none';
+function clearLogo() {
+    const logoImageInput = document.getElementById('logoImage');
+    const logoPreview = document.getElementById('logoPreview');
+    
+    if (logoImageInput) logoImageInput.value = '';
+    if (logoPreview) logoPreview.innerHTML = '';
+    
+    const settings = getSettings();
+    settings.logoImage = '';
+    saveSettings(settings);
+    updateSiteLogo(settings);
 }
 
-// Gallery Form Submit
-document.getElementById('galleryForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Pricing Management
+function getPricing() {
+    const stored = localStorage.getItem('karatePricing');
+    if (stored) {
+        return JSON.parse(stored);
+    }
+    return {
+        beginner: { price: 49, discount: 0, features: ['Basic training videos', 'Beginner kata tutorials', 'Community access'] },
+        advanced: { price: 89, discount: 0, features: ['All Beginner features', 'Advanced kata training', 'Kumite techniques', 'Priority support'] },
+        elite: { price: 149, discount: 0, features: ['All Advanced features', '1-on-1 coaching sessions', 'Exclusive content', 'Personalized training plan'] }
+    };
+}
+
+function savePricing(pricing) {
+    localStorage.setItem('karatePricing', JSON.stringify(pricing));
+    window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/pricing', pricing);
+    }
+}
+
+function loadPricing() {
+    const pricing = getPricing();
     
-    const type = document.getElementById('galleryType').value;
-    const editId = document.getElementById('editGalleryId').value;
-    const imageFile = document.getElementById('galleryImage').files[0];
+    const beginnerPrice = document.getElementById('beginnerPrice');
+    const beginnerDiscount = document.getElementById('beginnerDiscount');
+    const advancedPrice = document.getElementById('advancedPrice');
+    const advancedDiscount = document.getElementById('advancedDiscount');
+    const elitePrice = document.getElementById('elitePrice');
+    const eliteDiscount = document.getElementById('eliteDiscount');
     
-    const itemData = {
-        name: document.getElementById('galleryName').value,
-        subtitle: document.getElementById('gallerySubtitle').value,
-        tag: document.getElementById('galleryTag').value
+    if (beginnerPrice) beginnerPrice.value = pricing.beginner.price || 49;
+    if (beginnerDiscount) beginnerDiscount.value = pricing.beginner.discount || 0;
+    if (advancedPrice) advancedPrice.value = pricing.advanced.price || 89;
+    if (advancedDiscount) advancedDiscount.value = pricing.advanced.discount || 0;
+    if (elitePrice) elitePrice.value = pricing.elite.price || 149;
+    if (eliteDiscount) eliteDiscount.value = pricing.elite.discount || 0;
+    
+    loadFeaturesUI();
+}
+
+function saveAllPricing() {
+    const pricing = {
+        beginner: {
+            price: parseFloat(document.getElementById('beginnerPrice').value) || 49,
+            discount: parseFloat(document.getElementById('beginnerDiscount').value) || 0,
+            features: getFeaturesAsText('beginner')
+        },
+        advanced: {
+            price: parseFloat(document.getElementById('advancedPrice').value) || 89,
+            discount: parseFloat(document.getElementById('advancedDiscount').value) || 0,
+            features: getFeaturesAsText('advanced')
+        },
+        elite: {
+            price: parseFloat(document.getElementById('elitePrice').value) || 149,
+            discount: parseFloat(document.getElementById('eliteDiscount').value) || 0,
+            features: getFeaturesAsText('elite')
+        }
     };
     
-    let items;
-    let saveFn;
+    savePricing(pricing);
+    alert('Pricing saved successfully!');
+}
+
+// Payment Sessions
+function getPaymentSessions() {
+    const stored = localStorage.getItem('karatePaymentSessions');
+    if (stored) {
+        return JSON.parse(stored);
+    }
+    return {
+        upi: true,
+        banking: true,
+        check: true,
+        screenshot: true
+    };
+}
+
+function savePaymentSessions(sessions) {
+    localStorage.setItem('karatePaymentSessions', JSON.stringify(sessions));
+    window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/paymentSessions', sessions);
+    }
+}
+
+function loadPaymentSessions() {
+    const sessions = getPaymentSessions();
     
-    if (type === 'masters') {
-        items = getMasters();
-        saveFn = saveMasters;
-    } else if (type === 'champions') {
-        items = getChampions();
-        saveFn = saveChampions;
+    const toggleUpi = document.getElementById('toggleUpi');
+    const toggleBanking = document.getElementById('toggleBanking');
+    const toggleCheck = document.getElementById('toggleCheck');
+    const toggleScreenshot = document.getElementById('toggleScreenshot');
+    
+    if (toggleUpi) toggleUpi.checked = sessions.upi;
+    if (toggleBanking) toggleBanking.checked = sessions.banking;
+    if (toggleCheck) toggleCheck.checked = sessions.check;
+    if (toggleScreenshot) toggleScreenshot.checked = sessions.screenshot;
+    
+    updatePaymentStatusMessage();
+}
+
+function togglePaymentSession(method) {
+    const sessions = getPaymentSessions();
+    sessions[method] = !sessions[method];
+    savePaymentSessions(sessions);
+    
+    updatePaymentStatusMessage();
+}
+
+function updatePaymentStatusMessage() {
+    const sessions = getPaymentSessions();
+    const statusEl = document.getElementById('paymentStatusMessage');
+    
+    if (!statusEl) return;
+    
+    const enabledCount = Object.values(sessions).filter(v => v).length;
+    
+    if (enabledCount === 0) {
+        statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>All payment methods are currently disabled. Users will not be able to make payments.</span>';
+        statusEl.style.background = '#ffebee';
+        statusEl.style.color = '#c62828';
+    } else if (enabledCount === 4) {
+        statusEl.innerHTML = '<i class="fas fa-info-circle"></i> <span>All payment methods are enabled.</span>';
+        statusEl.style.background = '#e3f2fd';
+        statusEl.style.color = '#1976d2';
     } else {
-        items = getAwarded();
-        saveFn = saveAwarded;
+        const disabledMethods = Object.entries(sessions)
+            .filter(([_, v]) => !v)
+            .map(([k, _]) => k.charAt(0).toUpperCase() + k.slice(1))
+            .join(', ');
+        statusEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>Disabled payment methods: ${disabledMethods}. Users cannot use these methods.</span>`;
+        statusEl.style.background = '#fff3e0';
+        statusEl.style.color = '#ef6c00';
     }
-    
-    if (imageFile) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            itemData.image = event.target.result;
-            saveGalleryItem(type, editId, itemData, items, saveFn);
-        };
-        reader.readAsDataURL(imageFile);
-    } else {
-        // Keep existing image if no new image uploaded
-        if (editId) {
-            const existingItem = items.find(i => i.id === parseInt(editId));
-            if (existingItem && existingItem.image) {
-                itemData.image = existingItem.image;
-            }
-        }
-        saveGalleryItem(type, editId, itemData, items, saveFn);
-    }
-});
-
-function saveGalleryItem(type, editId, itemData, items, saveFn) {
-    // Check for gallery image selection
-    const galleryImageInput = document.getElementById('galleryImage');
-    if (galleryImageInput && galleryImageInput.getAttribute('data-gallery-image')) {
-        itemData.image = galleryImageInput.getAttribute('data-gallery-image');
-    }
-    
-    if (editId) {
-        const index = items.findIndex(i => i.id === parseInt(editId));
-        if (index !== -1) {
-            items[index] = { ...items[index], ...itemData };
-        }
-    } else {
-        const newId = Math.max(...items.map(i => i.id), 0) + 1;
-        items.push({ id: newId, ...itemData });
-    }
-    
-    saveFn(items);
-    closeGalleryModal();
-    
-    if (type === 'masters') loadMasters();
-    else if (type === 'champions') loadChampions();
-    else loadAwarded();
-    
-    alert(editId ? 'Entry updated successfully!' : 'Entry added successfully!');
 }
 
-// Delete Gallery Prompt
-function deleteGalleryPrompt(id, type) {
-    document.getElementById('deleteGalleryId').value = id;
-    document.getElementById('deleteGalleryType').value = type;
-    document.getElementById('deleteModal').style.display = 'flex';
-}
-
-// Close Delete Modal
-function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
-}
-
-// Confirm Delete
-function confirmDelete() {
-    const id = parseInt(document.getElementById('deleteGalleryId').value);
-    const type = document.getElementById('deleteGalleryType').value;
+// Image Gallery Modal
+function openImageGallery(galleryType, galleryImageInputId, galleryPreviewId) {
+    window.currentGalleryImageInput = galleryType;
+    window.currentGalleryImageInputId = galleryImageInputId;
+    window.currentGalleryPreviewId = galleryPreviewId;
     
-    let items, saveFn;
-    
-    if (type === 'masters') {
-        items = getMasters();
-        saveFn = saveMasters;
-    } else if (type === 'champions') {
-        items = getChampions();
-        saveFn = saveChampions;
-    } else if (type === 'members') {
-        items = getMembers();
-        saveFn = saveMembers;
-    } else if (type === 'videos') {
-        items = getVideos();
-        saveFn = saveVideos;
-    } else {
-        items = getAwarded();
-        saveFn = saveAwarded;
-    }
-    
-    items = items.filter(i => i.id !== id);
-    saveFn(items);
-    
-    closeDeleteModal();
-    
-    if (type === 'masters') loadMasters();
-    else if (type === 'champions') loadChampions();
-    else if (type === 'awarded') loadAwarded();
-    else if (type === 'members') loadMembers();
-    else loadVideos();
-    
-    alert('Entry deleted successfully!');
-}
-
-// Utility function
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// Close modals when clicking outside
-window.addEventListener('click', function(e) {
-    if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
-    }
-});
-
-// Image Gallery Modal Functions
-function showImageGalleryModal() {
     const modal = document.getElementById('imageGalleryModal');
-    const grid = document.getElementById('imageGalleryGrid');
-    
-    // Collect all images from all galleries
-    const masters = getMasters();
-    const champions = getChampions();
-    const awarded = getAwarded();
-    
-    const allImages = [
-        ...masters.map(m => ({ ...m, source: 'masters' })),
-        ...champions.map(c => ({ ...c, source: 'champions' })),
-        ...awarded.map(a => ({ ...a, source: 'awarded' }))
-    ];
-    
-    // Filter only items with images
-    const imagesWithData = allImages.filter(item => item.image);
-    
-    if (imagesWithData.length === 0) {
-        grid.innerHTML = '';
-        grid.classList.add('empty-gallery');
-    } else {
-        grid.innerHTML = imagesWithData.map(item => `
-            <div class="gallery-image-item" onclick="selectGalleryImage('${item.image}', '${item.name.replace(/'/g, "\\'")}')">
-                <img src="${item.image}" alt="${item.name}">
-                <div class="image-name">${item.name}</div>
-            </div>
-        `).join('');
-        grid.classList.remove('empty-gallery');
+    if (modal) {
+        modal.style.display = 'flex';
+        loadGalleryImages();
     }
-    
-    modal.style.display = 'flex';
 }
 
 function closeImageGalleryModal() {
-    document.getElementById('imageGalleryModal').style.display = 'none';
+    const modal = document.getElementById('imageGalleryModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function getGalleryImages() {
+    const stored = localStorage.getItem('karateGalleryImages');
+    return stored ? JSON.parse(stored) : [];
+}
+
+function saveGalleryImages(images) {
+    localStorage.setItem('karateGalleryImages', JSON.stringify(images));
+}
+
+function loadGalleryImages() {
+    const images = getGalleryImages();
+    const grid = document.getElementById('imageGalleryGrid');
+    
+    if (!grid) return;
+    
+    if (images.length === 0) {
+        grid.innerHTML = '<p class="no-data">No images uploaded yet. Upload images from the Image Gallery page.</p>';
+        return;
+    }
+    
+    grid.innerHTML = images.map(img => `
+        <div class="gallery-image-item" onclick="selectGalleryImage('${img.image}', '${img.name.replace(/'/g, "\\'")}')">
+            <img src="${img.image}" alt="${img.name}">
+            <p>${img.name}</p>
+        </div>
+    `).join('');
 }
 
 function selectGalleryImage(imageData, imageName) {
-    // Check if we're in gallery form or logo form
-    const galleryImageInput = document.getElementById('galleryImage');
-    const galleryPreview = document.getElementById('galleryImagePreview');
+    const galleryImageInput = document.getElementById(window.currentGalleryImageInputId);
+    const galleryPreview = document.getElementById(window.currentGalleryPreviewId);
     const logoImageInput = document.getElementById('logoImage');
-    const logoPreview = document.getElementById('logoImagePreview');
-    
-    // Try to set in gallery form first (if visible)
-    if (galleryImageInput && galleryPreview && galleryImageInput.closest('.form-group').style.display !== 'none') {
-        // Store the image data directly
-        galleryImageInput.setAttribute('data-gallery-image', imageData);
-        galleryPreview.innerHTML = `<img src="${imageData}" alt="Selected from gallery"><p style="margin-top: 0.5rem; color: #27ae60;"><i class="fas fa-check"></i> Selected: ${imageName}</p>`;
-        closeImageGalleryModal();
-        return;
-    }
+    const logoPreview = document.getElementById('logoPreview');
     
     // Try logo form
     if (logoImageInput && logoPreview) {
@@ -1453,8 +1252,5 @@ function loadPaymentSessions() {
         }
     });
     
-    // Update status message
     updatePaymentStatusMessage();
 }
-
-console.log('Admin panel loaded successfully!');
