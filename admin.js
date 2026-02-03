@@ -266,25 +266,35 @@ const ADMIN_PASS = 'kK';
 
 // Check if already logged in
 if (localStorage.getItem('adminLoggedIn') === 'true') {
+    console.log('Already logged in, showing admin panel');
     showAdminPanel();
 }
 
 // Login Form Handler - wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
+    console.log('Login form found:', !!loginForm);
+    
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('Login form submitted');
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorEl = document.getElementById('loginError');
             
+            console.log('Username:', username);
+            console.log('Expected user:', ADMIN_USER);
+            console.log('Password match:', password === ADMIN_PASS);
+            
             if (username === ADMIN_USER && password === ADMIN_PASS) {
+                console.log('Login successful!');
                 localStorage.setItem('adminLoggedIn', 'true');
                 showAdminPanel();
                 if (errorEl) errorEl.textContent = '';
             } else {
+                console.log('Login failed - invalid credentials');
                 if (errorEl) errorEl.textContent = 'Invalid username or password';
             }
         });
@@ -293,8 +303,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Show Admin Panel
 function showAdminPanel() {
+    console.log('Showing admin panel');
     const loginSection = document.getElementById('loginSection');
     const adminPanel = document.getElementById('adminPanel');
+    console.log('Login section:', !!loginSection);
+    console.log('Admin panel:', !!adminPanel);
+    
     if (loginSection) loginSection.style.display = 'none';
     if (adminPanel) adminPanel.style.display = 'block';
     loadVideos();
