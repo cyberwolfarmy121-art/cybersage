@@ -261,8 +261,8 @@ function saveAwarded(awarded) {
 }
 
 // Admin credentials
-const ADMIN_USER = 'kK';
-const ADMIN_PASS = 'kK';
+const ADMIN_USER = 'KK';
+const ADMIN_PASS = 'KK';
 
 // Check if already logged in
 if (localStorage.getItem('adminLoggedIn') === 'true') {
