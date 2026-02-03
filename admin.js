@@ -291,6 +291,23 @@ if (localStorage.getItem('adminLoggedIn') === 'true') {
     }
 })();
 
+// Inline login handler for form onsubmit
+function handleLogin(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorEl = document.getElementById('loginError');
+    
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+        localStorage.setItem('adminLoggedIn', 'true');
+        showAdminPanel();
+        if (errorEl) errorEl.textContent = '';
+    } else {
+        if (errorEl) errorEl.textContent = 'Invalid username or password';
+    }
+}
+
 // Show Admin Panel
 function showAdminPanel() {
     const loginSection = document.getElementById('loginSection');
