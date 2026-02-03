@@ -355,7 +355,7 @@ function logout() {
 }
 
 // Show Admin Section
-function showAdminSection(section) {
+function showAdminSection(section, evt) {
     document.querySelectorAll('.admin-section').forEach(el => {
         el.style.display = 'none';
     });
@@ -366,9 +366,19 @@ function showAdminSection(section) {
     const sectionEl = document.getElementById('admin' + capitalizeFirst(section));
     if (sectionEl) {
         sectionEl.style.display = 'block';
-        if (event && event.target) {
-            event.target.classList.add('active');
-        }
+    }
+    
+    // Set active tab
+    if (evt && evt.target) {
+        evt.target.classList.add('active');
+    } else {
+        // Find the button that called this function
+        const buttons = document.querySelectorAll('.admin-tab');
+        buttons.forEach(btn => {
+            if (btn.textContent.toLowerCase().includes(section)) {
+                btn.classList.add('active');
+            }
+        });
     }
     
     if (section === 'settings') {
