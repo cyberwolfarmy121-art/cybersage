@@ -1,3 +1,9 @@
+// Firebase configuration
+let firebaseSync = window.firebaseSync || {
+    isAvailable: () => false,
+    listen: () => () => {}
+};
+
 // Mobile Navigation Toggle
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('navLinks');
@@ -92,43 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const storedSettings = localStorage.getItem('karateSettings');
     if (storedSettings) {
         const settings = JSON.parse(storedSettings);
-        
-        const navBrandText = document.querySelector('.nav-brand span');
-        const navBrandIcon = document.querySelector('.nav-brand i');
-        const navLogoImage = document.getElementById('navLogoImage');
-        
-        if (navBrandText && settings.siteName) {
-            navBrandText.textContent = settings.siteName;
-        }
-        if (navLogoImage && settings.logoImage) {
-            navLogoImage.src = settings.logoImage;
-            navLogoImage.style.display = 'block';
-            if (navBrandIcon) {
-                navBrandIcon.style.display = 'none';
-            }
-        } else if (navBrandIcon && settings.logoIcon) {
-            navBrandIcon.className = settings.logoIcon;
-        }
-        if (settings.siteName) {
-            document.title = settings.siteName + ' - Master the Art';
-        }
-        
-        const contactItems = document.querySelectorAll('.contact-item');
-        contactItems.forEach(item => {
-            const icon = item.querySelector('i');
-            const text = item.querySelector('p');
-            if (icon && text) {
-                if (icon.classList.contains('fa-map-marker-alt') && settings.contactAddress) {
-                    text.textContent = settings.contactAddress;
-                } else if (icon.classList.contains('fa-phone') && settings.contactPhone) {
-                    text.textContent = settings.contactPhone;
-                } else if (icon.classList.contains('fa-envelope') && settings.contactEmail) {
-                    text.textContent = settings.contactEmail;
-                } else if (icon.classList.contains('fa-clock') && settings.contactHours) {
-                    text.textContent = settings.contactHours;
-                }
-            }
-        });
+        applySettings(settings);
     }
     
     // Check if user is logged in
@@ -151,7 +121,119 @@ document.addEventListener('DOMContentLoaded', function() {
     loadMasters();
     loadChampions();
     loadAwarded();
+    
+    // Load from Firebase for cross-device sync
+    loadFromFirebase();
 });
+
+// Load data from Firebase for real-time updates across devices
+async function loadFromFirebase() {
+    if (!firebaseSync.isAvailable()) return;
+    
+    try {
+        // Listen for real-time updates from Firebase
+        const dataRef = firebaseSync.listen('karateApp', (data) => {
+            if (data) {
+                // Update localStorage with Firebase data
+                if (data.videos) {
+                    localStorage.setItem('karateVideos', JSON.stringify(data.videos));
+                    loadSavedVideos();
+                }
+                if (data.masters) {
+                    localStorage.setItem('karateMasters', JSON.stringify(data.masters));
+                    loadMasters();
+                }
+                if (data.champions) {
+                    localStorage.setItem('karateChampions', JSON.stringify(data.champions));
+                    loadChampions();
+                }
+                if (data.awarded) {
+                    localStorage.setItem('karateAwarded', JSON.stringify(data.awarded));
+                    loadAwarded();
+                }
+                if (data.features) {
+                    localStorage.setItem('karateFeatures', JSON.stringify(data.features));
+                }
+                if (data.pricing) {
+                    localStorage.setItem('karatePricing', JSON.stringify(data.pricing));
+                    loadSavedPricing();
+                }
+                if (data.settings) {
+                    localStorage.setItem('karateSettings', JSON.stringify(data.settings));
+                    applySettings(data.settings);
+                }
+                if (data.paymentSessions) {
+                    localStorage.setItem('karatePaymentSessions', JSON.stringify(data.paymentSessions));
+                }
+                
+                // Show notification for cross-device updates
+                showSyncNotification();
+            }
+        });
+        
+        // Store cleanup function
+        window.firebaseUnsub = dataRef;
+        
+    } catch (error) {
+        console.warn('Firebase sync not available, using localStorage only');
+    }
+}
+
+// Show sync notification
+function showSyncNotification() {
+    const notification = document.getElementById('syncNotification');
+    if (!notification) {
+        // Create notification if it doesn't exist
+        const notif = document.createElement('div');
+        notif.id = 'syncNotification';
+        notif.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#27ae60;color:white;padding:12px 20px;border-radius:8px;z-index:10000;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;';
+        notif.innerHTML = '<i class="fas fa-sync-alt"></i> Updated from admin';
+        document.body.appendChild(notif);
+    }
+    const notif = document.getElementById('syncNotification');
+    notif.style.display = 'block';
+    setTimeout(() => { notif.style.display = 'none'; }, 3000);
+}
+
+// Apply settings helper function
+function applySettings(settings) {
+    const navBrandText = document.querySelector('.nav-brand span');
+    const navBrandIcon = document.querySelector('.nav-brand i');
+    const navLogoImage = document.getElementById('navLogoImage');
+    
+    if (navBrandText && settings.siteName) {
+        navBrandText.textContent = settings.siteName;
+    }
+    if (navLogoImage && settings.logoImage) {
+        navLogoImage.src = settings.logoImage;
+        navLogoImage.style.display = 'block';
+        if (navBrandIcon) {
+            navBrandIcon.style.display = 'none';
+        }
+    } else if (navBrandIcon && settings.logoIcon) {
+        navBrandIcon.className = settings.logoIcon;
+    }
+    if (settings.siteName) {
+        document.title = settings.siteName + ' - Master the Art';
+    }
+    
+    const contactItems = document.querySelectorAll('.contact-item');
+    contactItems.forEach(item => {
+        const icon = item.querySelector('i');
+        const text = item.querySelector('p');
+        if (icon && text) {
+            if (icon.classList.contains('fa-map-marker-alt') && settings.contactAddress) {
+                text.textContent = settings.contactAddress;
+            } else if (icon.classList.contains('fa-phone') && settings.contactPhone) {
+                text.textContent = settings.contactPhone;
+            } else if (icon.classList.contains('fa-envelope') && settings.contactEmail) {
+                text.textContent = settings.contactEmail;
+            } else if (icon.classList.contains('fa-clock') && settings.contactHours) {
+                text.textContent = settings.contactHours;
+            }
+        }
+    });
+}
 
 // Listen for storage changes (admin updates from other tabs)
 window.addEventListener('storage', function(e) {

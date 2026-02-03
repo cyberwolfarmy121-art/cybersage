@@ -1,5 +1,12 @@
 // Admin Panel JavaScript
 
+// Firebase configuration (load from external file if available)
+let firebaseSync = window.firebaseSync || {
+    isAvailable: () => false,
+    save: async () => false,
+    listen: () => () => {}
+};
+
 // Default videos data
 const defaultVideos = [
     // Kata Videos
@@ -120,6 +127,10 @@ function getFeatures() {
 function saveFeatures(features) {
     localStorage.setItem('karateFeatures', JSON.stringify(features));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/features', features);
+    }
 }
 
 // Load features into the UI
@@ -206,27 +217,47 @@ function setFeaturesFromText(plan, textArray) {
 function saveMembers(members) {
     localStorage.setItem('karateMembers', JSON.stringify(members));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/members', members);
+    }
 }
 
 // Save functions
 function saveVideos(videos) {
     localStorage.setItem('karateVideos', JSON.stringify(videos));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/videos', videos);
+    }
 }
 
 function saveMasters(masters) {
     localStorage.setItem('karateMasters', JSON.stringify(masters));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/masters', masters);
+    }
 }
 
 function saveChampions(champions) {
     localStorage.setItem('karateChampions', JSON.stringify(champions));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/champions', champions);
+    }
 }
 
 function saveAwarded(awarded) {
     localStorage.setItem('karateAwarded', JSON.stringify(awarded));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/awarded', awarded);
+    }
 }
 
 // Admin credentials
@@ -760,6 +791,10 @@ function getPricing() {
 function savePricing(pricing) {
     localStorage.setItem('karatePricing', JSON.stringify(pricing));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/pricing', pricing);
+    }
 }
 
 // Update price preview
@@ -851,6 +886,10 @@ function getSettings() {
 function saveSettings(settings) {
     localStorage.setItem('karateSettings', JSON.stringify(settings));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/settings', settings);
+    }
 }
 
 // Logo Form Submit
@@ -1337,6 +1376,10 @@ function getPaymentSessions() {
 function savePaymentSessions(sessions) {
     localStorage.setItem('karatePaymentSessions', JSON.stringify(sessions));
     window.dispatchEvent(new Event('karateDataChange'));
+    // Sync to Firebase
+    if (typeof firebaseSync !== 'undefined' && firebaseSync.isAvailable()) {
+        firebaseSync.save('karateApp/paymentSessions', sessions);
+    }
 }
 
 // Toggle a specific payment session
