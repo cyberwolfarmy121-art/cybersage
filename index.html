@@ -3,519 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karate Academy - Master the Art</title>
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="CyberSage - Your Cybersecurity & Ethical Hacking Assistant">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CyberSage">
+    <title>CyberSage - Cybersecurity Assistant</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-brand">
-            <img id="navLogoImage" src="" alt="Logo" style="display: none;">
-            <i class="fas fa-fist-raised"></i>
-            <span>Karate Academy</span>
-        </div>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#videos">Videos</a></li>
-            <li><a href="#membership">Membership</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="admin.html" class="admin-link"><i class="fas fa-cog"></i> Admin</a></li>
-            <li><a href="#" class="user-link" id="userLoginLink" onclick="showUserLogin()"><i class="fas fa-user"></i> Login</a></li>
-            <li><a href="#" class="user-link" id="userProfileLink" style="display: none;" onclick="showUserProfile()"><i class="fas fa-user-circle"></i> <span id="userNameDisplay"></span></a></li>
-        </ul>
-        <div class="hamburger" id="hamburger">
-            <i class="fas fa-bars"></i>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Master the Art of <span class="highlight">Karate</span></h1>
-            <p>Build strength, discipline, and confidence with our expert-led training programs</p>
-            <a href="#membership" class="btn btn-primary">Join Now</a>
-        </div>
-        <div class="hero-image">
-            <i class="fas fa-medal"></i>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <h2>Why Choose Us</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <i class="fas fa-user-shield"></i>
-                <h3>Expert Instructors</h3>
-                <p>Learn from certified black belt masters with years of experience</p>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🛡️</span>
+                <h1>CyberSage</h1>
             </div>
-            <div class="feature-card">
-                <i class="fas fa-users"></i>
-                <h3>All Ages Welcome</h3>
-                <p>Programs for kids, teens, and adults at every skill level</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-certificate"></i>
-                <h3>Certified Training</h3>
-                <p>Official curriculum with recognized belt progression system</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-heart"></i>
-                <h3>Holistic Approach</h3>
-                <p>Combine physical training with mental discipline and respect</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Videos Section -->
-    <section id="videos" class="videos">
-        <h2>Training Videos</h2>
-        <p class="section-subtitle">Exclusive content for our members</p>
+            <p class="tagline">Your Cybersecurity Assistant</p>
+        </header>
         
-        <div class="video-tabs">
-            <button class="video-tab active" onclick="showVideoCategory('kata')">Kata</button>
-            <button class="video-tab" onclick="showVideoCategory('beginner')">Beginner Basics</button>
-            <button class="video-tab" onclick="showVideoCategory('kumite')">Kumite</button>
-        </div>
-        
-        <div class="video-notice">
-            <i class="fas fa-info-circle"></i>
-            <span><strong>Free Preview:</strong> White & Yellow belt content is free. Advanced content requires membership.</span>
-        </div>
-        
-        <div class="video-container">
-            <!-- Kata Videos -->
-            <div id="kata" class="video-category active">
-                <div class="video-grid">
-                    <!-- Free Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail free">
-                            <i class="fas fa-play-circle"></i>
-                            <span class="video-duration">3:45</span>
-                        </div>
-                        <div class="video-info">
-                            <h4>Shotokan Kata - Taikyoku Shodan</h4>
-                            <p>Foundation kata for white belts</p>
-                            <span class="video-level free"><i class="fas fa-check"></i> Free Preview</span>
-                        </div>
-                    </div>
-                    <!-- Free Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail free">
-                            <i class="fas fa-play-circle"></i>
-                            <span class="video-duration">4:20</span>
-                        </div>
-                        <div class="video-info">
-                            <h4>Shotokan Kata - Heian Shodan</h4>
-                            <p>Peaceful mind - first of the five Heian katas</p>
-                            <span class="video-level free"><i class="fas fa-check"></i> Free Preview</span>
-                        </div>
-                    </div>
-                    <!-- Locked Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">5:30</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Shotokan Kata - Heian Nidan</h4>
-                            <p>Peaceful mind - second Heian kata</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Advanced</span>
-                        </div>
-                    </div>
-                    <!-- Locked Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">6:15</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Shotokan Kata - Bassai Dai</h4>
-                            <p>Penetrate the fortress - advanced kata</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Advanced</span>
-                        </div>
+        <main class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+                <div class="welcome-message">
+                    <div class="bot-avatar">🤖</div>
+                    <div class="message-content">
+                        <p><strong>Welcome to CyberSage!</strong></p>
+                        <p>Your AI-powered cybersecurity assistant:</p>
+                        <ul>
+                            <li>Network security & defense</li>
+                            <li>Ethical hacking & penetration testing</li>
+                            <li>Vulnerability assessment</li>
+                            <li>Security best practices</li>
+                            <li>Incident response & forensics</li>
+                        </ul>
+                        <p><em>Focused on defensive & ethical security.</em></p>
+                        <p>Ask me anything about cybersecurity!</p>
                     </div>
                 </div>
             </div>
             
-            <!-- Beginner Videos -->
-            <div id="beginner" class="video-category">
-                <div class="video-grid">
-                    <!-- Free Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail free">
-                            <i class="fas fa-play-circle"></i>
-                            <span class="video-duration">2:30</span>
-                        </div>
-                        <div class="video-info">
-                            <h4>Basic Stances - Zenkutsu Dachi</h4>
-                            <p>Forward stance fundamentals</p>
-                            <span class="video-level free"><i class="fas fa-check"></i> Free Preview</span>
-                        </div>
-                    </div>
-                    <!-- Free Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail free">
-                            <i class="fas fa-play-circle"></i>
-                            <span class="video-duration">3:00</span>
-                        </div>
-                        <div class="video-info">
-                            <h4>Punch Technique - Gyaku Tsuki</h4>
-                            <p>Reverse punch execution</p>
-                            <span class="video-level free"><i class="fas fa-check"></i> Free Preview</span>
-                        </div>
-                    </div>
-                    <!-- Locked Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">3:15</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Kick Technique - Mae Geri</h4>
-                            <p>Front kick fundamentals</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Advanced</span>
-                        </div>
-                    </div>
-                    <!-- Locked Video -->
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">4:00</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Block Techniques - Age Uke & Soto Uke</h4>
-                            <p>Inside and outside block techniques</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Advanced</span>
-                        </div>
-                    </div>
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea id="user-input" placeholder="Ask about cybersecurity..." rows="1"></textarea>
+                    <button id="send-btn" class="send-btn">
+                        <span class="send-icon">➤</span>
+                    </button>
                 </div>
             </div>
-            
-            <!-- Kumite Videos (All Locked) -->
-            <div id="kumite" class="video-category">
-                <div class="video-grid">
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">5:00</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Ippon Kumite - One Point Sparring</h4>
-                            <p>Controlled partner drills for beginners</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Members Only</span>
-                        </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">6:30</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Sanbon Kumite - Three Step Sparring</h4>
-                            <p>Progressive sparring drills</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Members Only</span>
-                        </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">8:00</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Jiyu Kumite - Free Sparring</h4>
-                            <p>Open sparring for advanced students</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Members Only</span>
-                        </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-thumbnail locked" onclick="showMembershipPrompt()">
-                            <i class="fas fa-lock"></i>
-                            <span class="video-duration">10:00</span>
-                            <div class="lock-overlay">
-                                <i class="fas fa-crown"></i>
-                                <span>Members Only</span>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h4>Competition Kumite Techniques</h4>
-                            <p>Match strategies and timing</p>
-                            <span class="video-level locked"><i class="fas fa-lock"></i> Members Only</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="membership-cta">
-            <h3>Unlock All Videos</h3>
-            <p>Get unlimited access to all training videos with our Advanced or Elite membership</p>
-            <a href="#membership" class="btn btn-primary">View Membership Plans</a>
-        </div>
-    </section>
-
-    <!-- Gallery Section - Masters -->
-    <section id="masters" class="gallery">
-        <h2>Our Masters</h2>
-        <p class="section-subtitle">Meet our expert karate instructors</p>
-        <div class="gallery-grid" id="mastersGrid">
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-user-tie"></i>
-                </div>
-                <div class="gallery-info">
-                    <h4>Sensei John Smith</h4>
-                    <p>8th Dan Black Belt</p>
-                    <span class="gallery-role">Head Instructor</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-user-tie"></i>
-                </div>
-                <div class="gallery-info">
-                    <h4>Sensei Maria Garcia</h4>
-                    <p>6th Dan Black Belt</p>
-                    <span class="gallery-role">Senior Instructor</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-user-tie"></i>
-                </div>
-                <div class="gallery-info">
-                    <h4>Sensei David Lee</h4>
-                    <p>5th Dan Black Belt</p>
-                    <span class="gallery-role">Competition Coach</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section - Champions -->
-    <section id="champions" class="gallery champions">
-        <h2>Our Champions</h2>
-        <p class="section-subtitle">Celebrating our tournament winners</p>
-        <div class="gallery-grid" id="championsGrid">
-            <div class="gallery-item featured">
-                <div class="gallery-image">
-                    <i class="fas fa-trophy"></i>
-                    <span class="medal gold"><i class="fas fa-medal"></i></span>
-                </div>
-                <div class="gallery-info">
-                    <h4>Alex Johnson</h4>
-                    <p>National Champion 2023</p>
-                    <span class="gallery-category">Kata - Black Belt Division</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-award"></i>
-                    <span class="medal silver"><i class="fas fa-medal"></i></span>
-                </div>
-                <div class="gallery-info">
-                    <h4>Sarah Williams</h4>
-                    <p>Regional Champion 2023</p>
-                    <span class="gallery-category">Kumite - Heavyweight</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-award"></i>
-                    <span class="medal bronze"><i class="fas fa-medal"></i></span>
-                </div>
-                <div class="gallery-info">
-                    <h4>Michael Chen</h4>
-                    <p>State Champion 2023</p>
-                    <span class="gallery-category">Kata - Youth Division</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section - Masters Awarded -->
-    <section id="awarded" class="gallery awarded">
-        <h2>Masters Awarded</h2>
-        <p class="section-subtitle">Honoring special achievements and recognitions</p>
-        <div class="gallery-grid" id="awardedGrid">
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-certificate"></i>
-                </div>
-                <div class="gallery-info">
-                    <h4>Lifetime Achievement Award</h4>
-                    <p>Awarded to Sensei John Smith</p>
-                    <span class="gallery-date">2023</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="gallery-info">
-                    <h4>Excellence in Teaching</h4>
-                    <p>Awarded to Sensei Maria Garcia</p>
-                    <span class="gallery-date">2022</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="gallery-image">
-                    <i class="fas fa-medal"></i>
-                </div>
-                <div class="gallery-info">
-                    <h4>Coach of the Year</h4>
-                    <p>Awarded to Sensei David Lee</p>
-                    <span class="gallery-date">2023</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Membership Section -->
-    <section id="membership" class="membership">
-        <h2>Membership Plans</h2>
-        <p class="section-subtitle">Choose the plan that fits your goals</p>
-        
-        <div class="plans-container" id="plansContainer">
-            <!-- Plans will be loaded dynamically -->
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <h2>Get In Touch</h2>
-        <div class="contact-container">
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <p>123 Karate Street, Martial Arts City</p>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <p>(555) 123-4567</p>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <p>info@karateacademy.com</p>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-clock"></i>
-                    <p>Mon-Sat: 6AM - 9PM</p>
-                </div>
-            </div>
-            
-            <form class="contact-form" id="contactForm">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Email Address" required>
-                <input type="tel" placeholder="Phone Number">
-            </select>
-                    <option value="">Select Plan Interest</option>
-                    <option value="beginner">Beginner - ₹49/month</option>
-                    <option value="advanced">Advanced - ₹89/month</option>
-                    <option value="elite">Elite - ₹149/month</option>
-                </select>
-                <textarea placeholder="Your Message" rows="4"></textarea>
-                <button type="submit" class="btn btn-primary">Send Message</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="social-links">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-        </div>
-        <p>&copy; 2024 Karate Academy. All rights reserved.</p>
-    </footer>
-
-    <!-- Modal for Plan Selection -->
-    <div class="modal" id="planModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h3>Join Karate Academy</h3>
-            <p id="selectedPlanText"></p>
-            <form id="signupForm">
-                <input type="text" placeholder="Full Name" required>
-                <input type="email" placeholder="Email" required>
-                <input type="tel" placeholder="Phone" required>
-                <button type="submit" class="btn btn-primary">Complete Registration</button>
-            </form>
-        </div>
+        </main>
     </div>
 
-    <!-- User Login Modal -->
-    <div class="modal" id="userLoginModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeUserLogin()">&times;</span>
-            <h3>Member Login</h3>
-            <form id="userLoginForm">
-                <div class="form-group">
-                    <input type="email" id="userEmail" placeholder="Email Address" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-                <p id="loginError" class="error-message"></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- User Profile Modal -->
-    <div class="modal" id="userProfileModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeUserProfile()">&times;</span>
-            <h3><i class="fas fa-user-circle"></i> My Profile</h3>
-            <div id="userProfileContent">
-                <!-- Profile content will be loaded here -->
-            </div>
-            <button onclick="logoutUser()" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Logout</button>
-        </div>
-    </div>
-
-    <!-- Gallery Detail Modal -->
-    <div class="modal" id="galleryDetailModal">
-        <div class="modal-content gallery-detail">
-            <span class="close-modal" onclick="closeGalleryDetail()">&times;</span>
-            <div id="galleryDetailContent">
-                <!-- Gallery detail content will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <script src="firebase-config.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="script.js"></script>
+    <script src="script-static.js"></script>
 </body>
 </html>

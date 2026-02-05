@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - CyberSage</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e, #0f3460); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: #e4e4e4; padding: 20px; text-align: center; }
+        .container { max-width: 400px; }
+        .icon { font-size: 4rem; margin-bottom: 20px; }
+        h1 { font-size: 1.5rem; margin-bottom: 12px; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: #8892b0; margin-bottom: 24px; line-height: 1.6; }
+        .btn { background: linear-gradient(135deg, #00d4ff, #7b2cbf); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📡</div>
+        <h1>You're Offline</h1>
+        <p>CyberSage needs an internet connection. Connect and try again.</p>
+        <button class="btn" onclick="window.location.reload()">Try Again</button>
+    </div>
+</body>
+</html>
